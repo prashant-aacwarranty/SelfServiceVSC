@@ -1,0 +1,23 @@
+{
+	"version": "1.0.0",
+	"name": "asp.net",
+	"private": true,
+	"devDependencies": {
+		"gulp": "^4.0.2",
+		"gulp-concat": "^2.6.1",
+		"gulp-cssmin": "^0.2.0",
+		"gulp-uglify": "^3.0.2",
+		"merge-stream": "^2.0.0",
+		"del": "^6.0.0",
+		"jquery": "^3.6.0",
+		"jquery-validation": "^1.19.5",
+		"inputmask": "5.0.7",
+		"bootstrap": "^5.2.2",
+		"swiper": "^8.4.4",
+		"glightbox": "^3.2.0",
+		"chart.js": "^3.7.1",
+		"fontawesome-free": "^1.0.4",
+		"bootstrap-icons": "^1.8.1",
+		"lz-string": "1.4.4"
+	}
+}

@@ -1,0 +1,24 @@
+using System.Text.Json.Serialization;
+
+namespace AAC.SelfServiceVSC.Models.Line5API
+{
+	public class QuoteProtectionsGet
+	{
+		#region Properties
+		[JsonPropertyName("data")]
+		public DataModel Data { get; set; } = null;
+		#endregion
+
+		public class DataModel
+		{
+			#region Properties
+			[JsonPropertyName("id")]
+			[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
+			public Int64? Id { get; set; } = null;
+
+			[JsonPropertyName("type")]
+			public String Type { get; set; } = "quotes";
+			#endregion
+		}
+	}
+}

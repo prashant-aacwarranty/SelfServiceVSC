@@ -1,0 +1,208 @@
+@{
+	ViewData["Title"] = "Loan Details";
+}
+
+<div class="container row" id="estimateDetails">
+	<h4 class="text-center">Selected Contract Details</h4>
+	<div class="row">
+		<div class="col-md-12">
+			<span class="planName"></span>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			Deductible: $ <span class="deductible"></span>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			Cost: $ <span class="cost"></span>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			Term: <span class="term"></span> months (<span class="termYears"></span> years <span class="termMonths"></span> months)
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			Mileage: <span class="mileage"></span>
+		</div>
+	</div>
+</div>
+
+<form id="quote_form" name="quote_form" method="post" action="/ModifyQuote">
+	<div class="container row mt-3" id="quoteUpdateDetails">
+		<div class="col-md-12">
+			<div class="card transparent">
+				<div class="card-header">
+					<h4 class="text-center">Loan Terms</h4>
+				</div>
+				<div class="card-body">
+					<div class="row">
+						<div class="form-group col-md-6">
+							<label for="form_term">Term (Months)</label>
+							<input type="text" name="term" id="form_term" class="form-control" value="" placeholder="Term (Months)" inputmode="numeric" />
+						</div>
+						<div class="form-group col-md-6">
+							Allowed Range
+							<br />
+							<span class="minTerm"></span> - <span class="maxTerm"></span> months
+						</div>
+					</div>
+					<div class="row mt-1">
+						<div class="form-group col-md-6">
+							<label for="form_lname">Down Payment</label>
+							$ <input type="text" name="downpayment" id="form_downpayment" class="form-control" value="" placeholder="Down Payment" inputmode="numeric" />
+						</div>
+						<div class="col-md-3">
+							Allowed Range
+							<br />
+							$ <span class="minDownPayment"></span> - $ <span class="maxDownPayment"></span>
+						</div>
+						<div class="col-md-3">
+							Financed Amount
+							<br />
+							$ <span class="financedAmount"></span>
+						</div>
+					</div>
+					<hr />
+					<div class="text-center">
+						<button id="submit_quote" type="button" class="btn btn-success rounded-pill p-4 pt-2 pb-2">Update Terms</button>
+					</div>
+					<hr />
+					<div class="row">
+						<div class="col-md-12">
+							Monthly Payment: $ <span class="monthlyPayment"></span>
+						</div>
+					</div>
+					<hr />
+					<p class="text-center">You can always call us at <a href="tel:@SelfServiceVSC.AppSettings.PhoneNumberMain"><i class="fas fa-phone-alt small m-1"></i>@SelfServiceVSC.AppSettings.PhoneNumberMain.FormatPhone()</a> and we can complete this process on the phone.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+<div class="text-center mt-3">
+	<button class="btn btn-success" id="finalize_quote">
+		Finalize and Enter Payment Details
+	</button>
+</div>
+
+@section Scripts
+{
+<style type="text/css">
+body {
+	background-image: linear-gradient(white 20%, transparent 30%, transparent 70%, white 80%), url('/img/bg/bg03.jpg');
+}
+</style>
+<script type="text/javascript">
+	let estimateQuoteData;
+
+	let retrieveQuote = () =>
+	{
+		$.ajax({
+			type: "post",
+			url: "/RetrieveQuote",
+			data: JSON.stringify(""),
+			success: function(data)
+			{
+				estimateQuoteData = data;
+
+				let card = $("#estimateDetails");
+
+				card.find(".termMiles").text(estimateQuoteData.estimate.mileage.toLocaleString());
+				card.find(".planName").text(estimateQuoteData.estimate.planDescription);
+				card.find(".deductible").text(estimateQuoteData.estimate.deductAmt.toFixed(2).toLocaleString());
+				card.find(".cost").text(estimateQuoteData.estimate.retailRate.toFixed(2).toLocaleString());
+				card.find(".term").text(estimateQuoteData.estimate.term);
+				card.find(".termYears").text(Math.floor(estimateQuoteData.estimate.term / 12));
+				card.find(".termMonths").text(estimateQuoteData.estimate.term % 12);
+				card.find(".mileage").text(estimateQuoteData.estimate.mileage.toLocaleString());
+				card.find(".card.quote").attr("rateId", estimateQuoteData.estimate.rateId);
+
+				$("#form_term").val(estimateQuoteData.quote.term);
+				$("#form_downpayment").val(estimateQuoteData.quote.downPayment);
+				$("#quoteUpdateDetails .interestRate").text(estimateQuoteData.quote.interestPercent.toFixed(2));
+				$("#quoteUpdateDetails .monthlyPayment").text(estimateQuoteData.quote.monthlyPayment.toFixed(2).toLocaleString());
+				$("#quoteUpdateDetails .totalPayments").text((estimateQuoteData.quote.monthlyPayment * estimateQuoteData.quote.term).toFixed(2).toLocaleString());
+
+				$("#quoteUpdateDetails .minDownPayment").text(estimateQuoteData.quote.minDownPayment.toFixed(2).toLocaleString());
+				$("#quoteUpdateDetails .maxDownPayment").text(estimateQuoteData.quote.maxDownPayment.toFixed(2).toLocaleString());
+
+				$("#quoteUpdateDetails .minTerm").text(Math.min(estimateQuoteData.quote.term.toFixed(0), 12).toLocaleString());
+				$("#quoteUpdateDetails .maxTerm").text(estimateQuoteData.maxTerm.toLocaleString());
+
+				updateTerms();
+			},
+			contentType: "application/json"
+		});
+	};
+
+	let updateTerms = () =>
+	{
+		let term = parseInt($("#form_term").val().replace(/[^\d\.]/g, ''));
+		$("#quoteUpdateDetails .termYears").text(Math.floor(term / 12));
+		$("#quoteUpdateDetails .termMonths").text(term % 12);
+		let downPayment = parseFloat($("#form_downpayment").val().replace(/[^\d\.]/g, ''));
+		if (downPayment < estimateQuoteData.quote.minDownPayment)
+		{
+			downPayment = estimateQuoteData.quote.minDownPayment;
+			$("#form_downpayment").val(downPayment);
+		}
+		if (downPayment > estimateQuoteData.quote.maxDownPayment)
+		{
+			downPayment = estimateQuoteData.quote.maxDownPayment;
+			$("#form_downpayment").val(downPayment);
+		}
+		$("#quoteUpdateDetails .financedAmount").text((estimateQuoteData.estimate.retailRate - ifNaN(downPayment, 0)).toLocaleString());
+	}
+
+	$(function()
+	{
+		$(":input").inputmask();
+		$("#form_downpayment").inputmask({ alias: "currency" });
+
+		retrieveQuote();
+
+		$("#form_term,#form_downpayment").on(
+			"change keyup",
+			(event) =>
+			{
+				updateTerms();
+			});
+
+		$("#submit_quote").on(
+			"click select",
+			(event) =>
+			{
+				preventEvent(event);
+				formSubmit({
+					form: $("#quote_form"),
+					url: "/ModifyQuote",
+					successFunction: function (data)
+					{
+						if (data === false)
+						{
+							// Something has gone wrong, we need to handle this visually
+						}
+						else
+						{
+							retrieveQuote();
+						}
+					}
+				});
+			});
+
+		$("#finalize_quote").on(
+			"click select",
+			(event) =>
+			{
+				preventEvent(event);
+
+				window.location = "/Payment";
+			});
+	});
+</script>
+}

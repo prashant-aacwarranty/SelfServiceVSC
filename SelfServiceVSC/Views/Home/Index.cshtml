@@ -1,0 +1,190 @@
+@using AAC.SelfServiceVSC
+@using AAC.SelfServiceVSC.Models
+@{
+	ViewData["Title"] = "Home Page";
+}
+
+<div class="container">
+	<form id="estimate_form" method="post" action="/estimate">
+		<div class="row">
+			<div class="col-md-6">
+				<h3 class="text-center">Get Covered! <i class="fas fa-shield-alt color-dtcblue"></i></h3>
+				<hr />
+				<p class="text-center mt-4 mb-4">Get exceptional vehicle protection at an incredible month-to-month cost:</p>
+				<ul class="checkboxes">
+					<li><i class="fas fa-check-circle"></i>Plans starting as low as $30/month</li>
+					<li><i class="fas fa-check-circle"></i>Get your free, no obligation quote in 15 seconds</li>
+					<li>
+						<i class="fas fa-check-circle"></i>Coverage Details
+						<ul>
+							<li><a href="#" class="whatiscovered"><i class="fas fa-question-circle"></i>What is Covered?</a></li>
+							<li><a href="#" class="whatiscoverednot"><i class="fas fa-question-circle"></i>What is Not Covered?</a>
+							</li>
+							<li><a href="#" class="whatiscoveredchart"><i class="fas fa-question-circle"></i>Coverage Chart</a></li>
+						</ul>
+					</li>
+					<li>
+						<i class="fas fa-question-circle"></i>Choose the term that best fits your needs:
+						<ul>
+							<li><i class="fas fa-check-circle"></i><span class="fw-bold">Flexible pricing</span><br />Your monthly
+								cost is based on the year, make, model and mileage of your vehicle. Prices start as low as $30 per
+								month.</li>
+							<li><i class="fas fa-check-circle"></i><span class="fw-bold">Easy, no-obligation quote</span><br />Enter
+								your Vehicle Identification Number (VIN) and current mileage to get your quote. Coverage starts as soon
+								as you sign up.</li>
+							<li><i class="fas fa-check-circle"></i><span class="fw-bold">Reliable protection</span><br />Eliminate
+								large, unexpected repair bills. Peace-of-mind comes from knowing that your budget won’t get hit by huge
+								surprises.</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+			<div class="col-md-6">
+				<div class="card transparent">
+					<div class="card-header">
+						<h3 class="text-center">Get Your Free Quote</h3>
+					</div>
+					<div class="card-body">
+						<p class="form-section">Fill in some information about your vehicle to see available coverage plans!</p>
+						<div class="form-group">
+							<label for="form_year">Year</label>
+							<select name="year" id="form_year" class="form-control">
+								<option selected value="">Select</option>
+								@{
+									for (Int32 i = -1; i < 5; i++)
+									{
+										<text>
+											<option value="@(DateTime.Now.Year - i)">@(DateTime.Now.Year - i)</option>
+										</text>
+									}
+								}
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="form_make">Make</label>
+							<select name="make" id="form_make" class="form-control">
+								<option selected value="">Select</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="form_model">Model</label>
+							<select name="model" id="form_model" class="form-control" disabled readonly>
+								<option selected value="">Choose a Make</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="form_mileage">Mileage</label>
+							<input type="text" name="mileage" id="form_mileage" class="form-control" value=""
+								placeholder="Estimated Mileage" data-inputmask="'regex': '\\d{1,6}'" inputmode="numeric" />
+						</div>
+						<hr />
+						<div class="form-group">
+							<label for="form_vin">VIN</label>
+							<input type="text" name="vin" id="form_vin" class="form-control" value=""
+								placeholder="Type your vehicle's full VIN" />
+						</div>
+						<br />
+						<hr />
+						<div class="text-center">
+							<button id="submit_estimate" type="button" class="btn btn-success rounded-pill p-4 pt-2 pb-2">Get a FREE
+								Quote</button>
+						</div>
+						<br />
+						<hr />
+						<p class="text-center">You can always call us at <a
+								href="tel:@SelfServiceVSC.AppSettings.PhoneNumberMain"><i
+									class="fas fa-phone-alt small m-1"></i>@SelfServiceVSC.AppSettings.PhoneNumberMain.FormatPhone()</a>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+
+@section Scripts 	{
+	<script type="text/javascript">
+		@* todo: this could be a lot smaller *@
+		var makeModel = [
+			{ Make: "ACURA", Model: "ILX" }, { Make: "ACURA", Model: "INTEGRA" }, { Make: "ACURA", Model: "MDX" }, { Make: "ACURA", Model: "NSX" }, { Make: "ACURA", Model: "RDX" }, { Make: "ACURA", Model: "RLX" }, { Make: "ACURA", Model: "TLX" }, { Make: "ALEXANDER DENNIS", Model: "ENVIRO 200" }, { Make: "ALEXANDER DENNIS", Model: "ENVIRO 400" }, { Make: "ALEXANDER DENNIS", Model: "ENVIRO 500" }, { Make: "ALEXANDER DENNIS", Model: "ENVIRO 500 SUPERFLO" }, { Make: "ALEXANDER DENNIS", Model: "ENVIRO 500EV" }, { Make: "ALFA ROMEO", Model: "4C" }, { Make: "ALFA ROMEO", Model: "GIULIA" }, { Make: "ALFA ROMEO", Model: "STELVIO" }, { Make: "ASTON MARTIN", Model: "DB11" }, { Make: "ASTON MARTIN", Model: "DBS" }, { Make: "ASTON MARTIN", Model: "DBX" }, { Make: "ASTON MARTIN", Model: "RAPIDE" }, { Make: "ASTON MARTIN", Model: "V12 VANTAGE" }, { Make: "ASTON MARTIN", Model: "V8" }, { Make: "ASTON MARTIN", Model: "VANQUISH" }, { Make: "ASTON MARTIN", Model: "VANTAGE" }, { Make: "AUDI", Model: "A3" }, { Make: "AUDI", Model: "A4" }, { Make: "AUDI", Model: "A4 ALLROAD" }, { Make: "AUDI", Model: "A5" }, { Make: "AUDI", Model: "A6" }, { Make: "AUDI", Model: "A6 ALLROAD" }, { Make: "AUDI", Model: "A7" }, { Make: "AUDI", Model: "A8" }, { Make: "AUDI", Model: "E-TRON" }, { Make: "AUDI", Model: "E-TRON GT" }, { Make: "AUDI", Model: "E-TRON S" }, { Make: "AUDI", Model: "Q3" }, { Make: "AUDI", Model: "Q4 E-TRON" }, { Make: "AUDI", Model: "Q5" }, { Make: "AUDI", Model: "Q5 E" }, { Make: "AUDI", Model: "Q7" }, { Make: "AUDI", Model: "Q8" }, { Make: "AUDI", Model: "R8" }, { Make: "AUDI", Model: "RS E-TRON GT" }, { Make: "AUDI", Model: "RS Q8" }, { Make: "AUDI", Model: "RS3" }, { Make: "AUDI", Model: "RS5" }, { Make: "AUDI", Model: "RS6" }, { Make: "AUDI", Model: "RS7" }, { Make: "AUDI", Model: "S3" }, { Make: "AUDI", Model: "S4" }, { Make: "AUDI", Model: "S5" }, { Make: "AUDI", Model: "S6" }, { Make: "AUDI", Model: "S7" }, { Make: "AUDI", Model: "S8" }, { Make: "AUDI", Model: "SQ5" }, { Make: "AUDI", Model: "SQ7" }, { Make: "AUDI", Model: "SQ8" }, { Make: "AUDI", Model: "TT" }, { Make: "AUDI", Model: "TT RS" }, { Make: "AUDI", Model: "TTS" }, { Make: "AUTOCAR LLC", Model: "DC-64" }, { Make: "AUTOCAR LLC", Model: "XPEDITOR" }, { Make: "AUTOCAR LLC", Model: "XPERT" }, { Make: "AUTOCAR LLC", Model: "XSPOTTER-OFF" }, { Make: "AUTOCAR LLC", Model: "XSPOTTER-ON" }, { Make: "BENTLEY", Model: "BENTAYGA" }, { Make: "BENTLEY", Model: "CONTINENTAL" }, { Make: "BENTLEY", Model: "FLYING SPUR" }, { Make: "BENTLEY", Model: "MULSANNE" }, { Make: "BLUE BIRD", Model: "INCOMPLETE VEHICLE" }, { Make: "BLUE BIRD", Model: "SCHOOL BUS / TRANSIT BUS" }, { Make: "BMW", Model: "228I" }, { Make: "BMW", Model: "228XI" }, { Make: "BMW", Model: "230I" }, { Make: "BMW", Model: "230XI" }, { Make: "BMW", Model: "320" }, { Make: "BMW", Model: "328" }, { Make: "BMW", Model: "330" }, { Make: "BMW", Model: "330E" }, { Make: "BMW", Model: "330I" }, { Make: "BMW", Model: "330XE" }, { Make: "BMW", Model: "330XI" }, { Make: "BMW", Model: "340" }, { Make: "BMW", Model: "340XI" }, { Make: "BMW", Model: "430I" }, { Make: "BMW", Model: "430XI" }, { Make: "BMW", Model: "440I" }, { Make: "BMW", Model: "440XI" }, { Make: "BMW", Model: "530" }, { Make: "BMW", Model: "530E" }, { Make: "BMW", Model: "530XE" }, { Make: "BMW", Model: "540" }, { Make: "BMW", Model: "540XD" }, { Make: "BMW", Model: "640" }, { Make: "BMW", Model: "650" }, { Make: "BMW", Model: "740" }, { Make: "BMW", Model: "745XE" }, { Make: "BMW", Model: "750" }, { Make: "BMW", Model: "840I" }, { Make: "BMW", Model: "840XI" }, { Make: "BMW", Model: "ALPINA B6" },
+			{ Make: "BMW", Model: "ALPINA B7" }, { Make: "BMW", Model: "ALPINA B8" }, { Make: "BMW", Model: "I3" }, { Make: "BMW", Model: "I4 EDRIVE40" }, { Make: "BMW", Model: "I4 M50" }, { Make: "BMW", Model: "I8" }, { Make: "BMW", Model: "IX" }, { Make: "BMW", Model: "M2" }, { Make: "BMW", Model: "M235XI" }, { Make: "BMW", Model: "M240I" }, { Make: "BMW", Model: "M240XI" }, { Make: "BMW", Model: "M3" }, { Make: "BMW", Model: "M340I" }, { Make: "BMW", Model: "M340XI" }, { Make: "BMW", Model: "M4" }, { Make: "BMW", Model: "M440I" }, { Make: "BMW", Model: "M440XI" }, { Make: "BMW", Model: "M5" }, { Make: "BMW", Model: "M550XI" }, { Make: "BMW", Model: "M6" }, { Make: "BMW", Model: "M760" }, { Make: "BMW", Model: "M8" }, { Make: "BMW", Model: "M850XI" }, { Make: "BMW", Model: "X1" }, { Make: "BMW", Model: "X2" }, { Make: "BMW", Model: "X3" }, { Make: "BMW", Model: "X4" }, { Make: "BMW", Model: "X5" }, { Make: "BMW", Model: "X6" }, { Make: "BMW", Model: "X7" }, { Make: "BMW", Model: "Z4" }, { Make: "BRIGHTDROP", Model: "EV600" }, { Make: "BUGATTI", Model: "CHIRON" }, { Make: "BUICK", Model: "CASCADA" }, { Make: "BUICK", Model: "ENCLAVE" }, { Make: "BUICK", Model: "ENCORE" }, { Make: "BUICK", Model: "ENCORE GX" }, { Make: "BUICK", Model: "ENVISION" }, { Make: "BUICK", Model: "LACROSSE" }, { Make: "BUICK", Model: "REGAL" }, { Make: "BUICK", Model: "REGAL TOURX" }, { Make: "BYD COACH AND BUS LLC", Model: "E6" }, { Make: "BYD COACH AND BUS LLC", Model: "EBUS" }, { Make: "BYD COACH AND BUS LLC", Model: "ELECTRIC TRUCK" }, { Make: "BYD COACH AND BUS LLC", Model: "TRANSIT BUS" }, { Make: "BYD COACH AND BUS LLC", Model: "TRANSIT BUS 30FT" }, { Make: "BYD COACH AND BUS LLC", Model: "TRANSIT BUS 35FT" }, { Make: "BYD COACH AND BUS LLC", Model: "TRANSIT BUS 40FT" }, { Make: "BYD COACH AND BUS LLC", Model: "TRANSIT BUS 60FT" }, { Make: "CADILLAC", Model: "ATS" }, { Make: "CADILLAC", Model: "ATS-V" }, { Make: "CADILLAC", Model: "CT4" }, { Make: "CADILLAC", Model: "CT4-V" }, { Make: "CADILLAC", Model: "CT5" }, { Make: "CADILLAC", Model: "CT5-V" }, { Make: "CADILLAC", Model: "CT6" }, { Make: "CADILLAC", Model: "CT6-V" }, { Make: "CADILLAC", Model: "CTS" }, { Make: "CADILLAC", Model: "CTS-V" }, { Make: "CADILLAC", Model: "ESCALADE" }, { Make: "CADILLAC", Model: "XT4" }, { Make: "CADILLAC", Model: "XT5" }, { Make: "CADILLAC", Model: "XT6" }, { Make: "CADILLAC", Model: "XTS" }, { Make: "CAPACITY OF TEXAS", Model: "TJ5000" }, { Make: "CAPACITY OF TEXAS", Model: "TJ6500T" }, { Make: "CAPACITY OF TEXAS", Model: "TJ9000" }, { Make: "CHANJE", Model: "V8100" }, { Make: "CHEVROLET", Model: "3500" }, { Make: "CHEVROLET", Model: "3500HD" }, { Make: "CHEVROLET", Model: "4500" }, { Make: "CHEVROLET", Model: "4500HD" }, { Make: "CHEVROLET", Model: "4500XD" }, { Make: "CHEVROLET", Model: "5500HD" }, { Make: "CHEVROLET", Model: "5500XD" }, { Make: "CHEVROLET", Model: "6500XD" }, { Make: "CHEVROLET", Model: "BLAZER" }, { Make: "CHEVROLET", Model: "BOLT EUV" }, { Make: "CHEVROLET", Model: "BOLT EV" }, { Make: "CHEVROLET", Model: "CAMARO" }, { Make: "CHEVROLET", Model: "CITY EXPRESS" }, { Make: "CHEVROLET", Model: "COLORADO" }, { Make: "CHEVROLET", Model: "CORVETTE" }, { Make: "CHEVROLET", Model: "CRUZE" }, { Make: "CHEVROLET", Model: "EQUINOX" }, { Make: "CHEVROLET", Model: "EQUINOX LIMITED" }, { Make: "CHEVROLET", Model: "EXPRESS G2500" }, { Make: "CHEVROLET", Model: "EXPRESS G3500" }, { Make: "CHEVROLET", Model: "EXPRESS G4500" }, { Make: "CHEVROLET", Model: "IMPALA" }, { Make: "CHEVROLET", Model: "MALIBU" }, { Make: "CHEVROLET", Model: "SILVERADO" }, { Make: "CHEVROLET", Model: "SILVERADO LD" }, { Make: "CHEVROLET", Model: "SILVERADO LTD" }, { Make: "CHEVROLET", Model: "SILVERADO MEDIUM DUTY" }, { Make: "CHEVROLET", Model: "SONIC" }, { Make: "CHEVROLET", Model: "SPARK" }, { Make: "CHEVROLET", Model: "SUBURBAN" }, { Make: "CHEVROLET", Model: "TAHOE" }, { Make: "CHEVROLET", Model: "TRAILBLAZER" },
+			{ Make: "CHEVROLET", Model: "TRAVERSE" }, { Make: "CHEVROLET", Model: "TRAX" }, { Make: "CHEVROLET", Model: "VOLT" }, { Make: "CHRYSLER", Model: "300" }, { Make: "CHRYSLER", Model: "300C" }, { Make: "CHRYSLER", Model: "PACIFICA" }, { Make: "CHRYSLER", Model: "VOYAGER" }, { Make: "CRANE CARRIER", Model: "AG" }, { Make: "CRANE CARRIER", Model: "C3100" }, { Make: "CRANE CARRIER", Model: "COE2" }, { Make: "CRANE CARRIER", Model: "DRILL RIG" }, { Make: "CRANE CARRIER", Model: "LDT2" }, { Make: "CRANE CARRIER", Model: "LET2" }, { Make: "CRANE CARRIER", Model: "LET2 CC" }, { Make: "DODGE", Model: "CHALLENGER" }, { Make: "DODGE", Model: "CHARGER" }, { Make: "DODGE", Model: "DURANGO" }, { Make: "DODGE", Model: "GRAND CARAVAN" }, { Make: "DODGE", Model: "JOURNEY" }, { Make: "EL DORADO", Model: "AXESS" }, { Make: "EL DORADO", Model: "E-Z RIDER II" }, { Make: "EL DORADO", Model: "TRANSMARK XHF" }, { Make: "EMERGENCY ONE", Model: "FIRETRUCK" }, { Make: "EVOBUS", Model: "407" }, { Make: "EVOBUS", Model: "417" }, { Make: "FERRARA FIRE APPARATUS", Model: "FIRE APPARATUS" }, { Make: "FERRARI", Model: "488 GTB" }, { Make: "FERRARI", Model: "488 PISTA" }, { Make: "FERRARI", Model: "488 PISTA SPIDER" }, { Make: "FERRARI", Model: "488 SPIDER" }, { Make: "FERRARI", Model: "812 COMPETIZIONE" }, { Make: "FERRARI", Model: "812 GTS" }, { Make: "FERRARI", Model: "812 SUPERFAST" }, { Make: "FERRARI", Model: "CALIFORNIA T" }, { Make: "FERRARI", Model: "F164 BCB" }, { Make: "FERRARI", Model: "F8 SPIDER" }, { Make: "FERRARI", Model: "F8 TRIBUTO" }, { Make: "FERRARI", Model: "GTC 4 LUSSO T" }, { Make: "FERRARI", Model: "GTC4 LUSSO" }, { Make: "FERRARI", Model: "PORTOFINO" }, { Make: "FERRARI", Model: "PORTOFINO M" }, { Make: "FERRARI", Model: "ROMA" }, { Make: "FERRARI", Model: "SF 90 SPIDER" }, { Make: "FERRARI", Model: "SF 90 STRADALE" }, { Make: "FIAT", Model: "124 SPIDER" }, { Make: "FIAT", Model: "500" }, { Make: "FIAT", Model: "500L" }, { Make: "FIAT", Model: "500X" }, { Make: "FORD", Model: "BRONCO" }, { Make: "FORD", Model: "BRONCO SPORT" }, { Make: "FORD", Model: "C-MAX" }, { Make: "FORD", Model: "ECONOLINE" }, { Make: "FORD", Model: "ECOSPORT" }, { Make: "FORD", Model: "EDGE" }, { Make: "FORD", Model: "ESCAPE" }, { Make: "FORD", Model: "EXPEDITION" }, { Make: "FORD", Model: "EXPLORER" }, { Make: "FORD", Model: "F150" }, { Make: "FORD", Model: "F250" }, { Make: "FORD", Model: "F350" }, { Make: "FORD", Model: "F450" }, { Make: "FORD", Model: "F53" }, { Make: "FORD", Model: "F550" }, { Make: "FORD", Model: "F59" }, { Make: "FORD", Model: "F600" }, { Make: "FORD", Model: "F650" }, { Make: "FORD", Model: "F750" }, { Make: "FORD", Model: "FIESTA" }, { Make: "FORD", Model: "FLEX" }, { Make: "FORD", Model: "FOCUS" }, { Make: "FORD", Model: "FUSION" }, { Make: "FORD", Model: "GT" }, { Make: "FORD", Model: "MAVERICK" }, { Make: "FORD", Model: "MUSTANG" }, { Make: "FORD", Model: "MUSTANG MACH-E" }, { Make: "FORD", Model: "RANGER" }, { Make: "FORD", Model: "TAURUS" }, { Make: "FORD", Model: "TRANSIT" }, { Make: "FORD", Model: "TRANSIT CONNECT" }, { Make: "FREIGHTLINER", Model: "108SD" }, { Make: "FREIGHTLINER", Model: "114SD" }, { Make: "FREIGHTLINER", Model: "122SD" }, { Make: "FREIGHTLINER", Model: "CASCADIA 113" }, { Make: "FREIGHTLINER", Model: "CASCADIA 116" }, { Make: "FREIGHTLINER", Model: "CASCADIA 125" }, { Make: "FREIGHTLINER", Model: "CASCADIA 126" }, { Make: "FREIGHTLINER", Model: "CHASSIS" }, { Make: "FREIGHTLINER", Model: "COLUMBIA" }, { Make: "FREIGHTLINER", Model: "CONVENTIONAL" }, { Make: "FREIGHTLINER", Model: "ECONIC SD" }, { Make: "FREIGHTLINER", Model: "M2" }, { Make: "FREIGHTLINER", Model: "SPORT CHASSIS" }, { Make: "FREIGHTLINER", Model: "SPRINTER" }, { Make: "GENESIS", Model: "G70" }, { Make: "GENESIS", Model: "G80" }, { Make: "GENESIS", Model: "G90" }, { Make: "GENESIS", Model: "GV60" }, { Make: "GENESIS", Model: "GV70" }, { Make: "GENESIS", Model: "GV80" }, { Make: "GILLIG", Model: "TRANSIT BUS" },
+			{ Make: "GLOBAL ELECTRIC MOTORS", Model: "E2" }, { Make: "GLOBAL ELECTRIC MOTORS", Model: "E4" }, { Make: "GLOBAL ELECTRIC MOTORS", Model: "E6" }, { Make: "GLOBAL ELECTRIC MOTORS", Model: "EL XD" }, { Make: "GLOBAL ELECTRIC MOTORS", Model: "EM 1400/1400 LSV" }, { Make: "GLOBAL ENVIRONMENTAL PRODUCTS", Model: "ELECTRIC" }, { Make: "GLOBAL ENVIRONMENTAL PRODUCTS", Model: "HIGH SIDE DUMP" }, { Make: "GLOBAL ENVIRONMENTAL PRODUCTS", Model: "HYBRID" }, { Make: "GLOBAL ENVIRONMENTAL PRODUCTS", Model: "MECHANICAL" }, { Make: "GLOBAL ENVIRONMENTAL PRODUCTS", Model: "RUNWAY SUCTION" }, { Make: "GMC", Model: "ACADIA" }, { Make: "GMC", Model: "CANYON" }, { Make: "GMC", Model: "HUMMER" }, { Make: "GMC", Model: "SAVANA" }, { Make: "GMC", Model: "SIERRA" }, { Make: "GMC", Model: "SIERRA LIMITED" }, { Make: "GMC", Model: "TERRAIN" }, { Make: "GMC", Model: "YUKON" }, { Make: "GMC", Model: "YUKON XL" }, { Make: "GRANDE WEST", Model: "TRANSIT BUS" }, { Make: "HENDRICKSON", Model: "FIRETRUCK" }, { Make: "HINO", Model: "155" }, { Make: "HINO", Model: "195" }, { Make: "HINO", Model: "198/258/268" }, { Make: "HINO", Model: "258/268" }, { Make: "HINO", Model: "338/358" }, { Make: "HINO", Model: "358" }, { Make: "HINO", Model: "HINO 258" }, { Make: "HINO", Model: "HINO 338" }, { Make: "HONDA", Model: "ACCORD" }, { Make: "HONDA", Model: "CIVIC" }, { Make: "HONDA", Model: "CLARITY" }, { Make: "HONDA", Model: "CR-V" }, { Make: "HONDA", Model: "FIT" }, { Make: "HONDA", Model: "HR-V" }, { Make: "HONDA", Model: "INSIGHT" }, { Make: "HONDA", Model: "ODYSSEY" }, { Make: "HONDA", Model: "PASSPORT" }, { Make: "HONDA", Model: "PILOT" }, { Make: "HONDA", Model: "RIDGELINE" }, { Make: "HYUNDAI", Model: "ACCENT" }, { Make: "HYUNDAI", Model: "AZERA" }, { Make: "HYUNDAI", Model: "ELANTRA" }, { Make: "HYUNDAI", Model: "ELANTRA GT" }, { Make: "HYUNDAI", Model: "ELANTRA N" }, { Make: "HYUNDAI", Model: "IONIQ" }, { Make: "HYUNDAI", Model: "IONIQ 5" }, { Make: "HYUNDAI", Model: "KONA" }, { Make: "HYUNDAI", Model: "KONA N" }, { Make: "HYUNDAI", Model: "NEXO" }, { Make: "HYUNDAI", Model: "PALISADE" }, { Make: "HYUNDAI", Model: "SANTA CRUZ" }, { Make: "HYUNDAI", Model: "SANTA FE" }, { Make: "HYUNDAI", Model: "SANTA FE SPORT" }, { Make: "HYUNDAI", Model: "SANTA FE XL" }, { Make: "HYUNDAI", Model: "SONATA" }, { Make: "HYUNDAI", Model: "TUCSON" }, { Make: "HYUNDAI", Model: "VELOSTER" }, { Make: "HYUNDAI", Model: "VELOSTER N" }, { Make: "HYUNDAI", Model: "VENUE" }, { Make: "IC CORPORATION", Model: "1000" }, { Make: "IC CORPORATION", Model: "3000" }, { Make: "IC CORPORATION", Model: "TC COMMERCIAL BUS" }, { Make: "INFINITI", Model: "Q50" }, { Make: "INFINITI", Model: "Q60" }, { Make: "INFINITI", Model: "Q70" }, { Make: "INFINITI", Model: "Q70L" }, { Make: "INFINITI", Model: "QX30" }, { Make: "INFINITI", Model: "QX50" }, { Make: "INFINITI", Model: "QX55" }, { Make: "INFINITI", Model: "QX60" }, { Make: "INFINITI", Model: "QX80" }, { Make: "INTERNATIONAL", Model: "4000" }, { Make: "INTERNATIONAL", Model: "7000" }, { Make: "INTERNATIONAL", Model: "8000" }, { Make: "INTERNATIONAL", Model: "9900" }, { Make: "INTERNATIONAL", Model: "CV515" }, { Make: "INTERNATIONAL", Model: "HV507" }, { Make: "INTERNATIONAL", Model: "HV513" }, { Make: "INTERNATIONAL", Model: "HV607" }, { Make: "INTERNATIONAL", Model: "HV613" }, { Make: "INTERNATIONAL", Model: "HX515" }, { Make: "INTERNATIONAL", Model: "HX520" }, { Make: "INTERNATIONAL", Model: "HX615" }, { Make: "INTERNATIONAL", Model: "HX620" }, { Make: "INTERNATIONAL", Model: "LONESTAR" }, { Make: "INTERNATIONAL", Model: "LT625" }, { Make: "INTERNATIONAL", Model: "MV607" }, { Make: "INTERNATIONAL", Model: "PROSTAR" }, { Make: "INTERNATIONAL", Model: "RH613" }, { Make: "INTERNATIONAL", Model: "TERRASTAR" }, { Make: "IRIZAR", Model: "GAMA I6" }, { Make: "ISUZU", Model: "FTR" }, { Make: "ISUZU", Model: "NPR" }, { Make: "ISUZU", Model: "NPR HD" }, { Make: "ISUZU", Model: "NPR XD" }, { Make: "ISUZU", Model: "NQR" }, { Make: "ISUZU", Model: "NRR" }, { Make: "JAGUAR", Model: "E-PACE" }, { Make: "JAGUAR", Model: "F-PACE" },
+			{ Make: "JAGUAR", Model: "F-TYPE" }, { Make: "JAGUAR", Model: "I-PACE" }, { Make: "JAGUAR", Model: "XE" }, { Make: "JAGUAR", Model: "XF" }, { Make: "JAGUAR", Model: "XJ" }, { Make: "JAGUAR", Model: "XJL" }, { Make: "JAGUAR", Model: "XJR" }, { Make: "JEEP", Model: "CHEROKEE" }, { Make: "JEEP", Model: "COMPASS" }, { Make: "JEEP", Model: "GLADIATOR" }, { Make: "JEEP", Model: "GRAND CHEROKEE" }, { Make: "JEEP", Model: "GRAND WAGONEER" }, { Make: "JEEP", Model: "RENEGADE" }, { Make: "JEEP", Model: "WAGONEER" }, { Make: "JEEP", Model: "WRANGLER" }, { Make: "JEEP", Model: "WRANGLER UNLIMITED" }, { Make: "KALMAR", Model: "OTTAWA 4X2" }, { Make: "KALMAR", Model: "OTTAWA 6X4" }, { Make: "KALMAR", Model: "OTTAWA T2" }, { Make: "KALMAR", Model: "T2E" }, { Make: "KARMA AUTOMOTIVE LLC", Model: "GS-6" }, { Make: "KARMA AUTOMOTIVE LLC", Model: "REVERO" }, { Make: "KENWORTH", Model: "CONSTRUCTION" }, { Make: "KENWORTH", Model: "K270/K370" }, { Make: "KIA", Model: "CADENZA" }, { Make: "KIA", Model: "CARNIVAL" }, { Make: "KIA", Model: "EV6" }, { Make: "KIA", Model: "FORTE" }, { Make: "KIA", Model: "K5" }, { Make: "KIA", Model: "K900" }, { Make: "KIA", Model: "NIRO" }, { Make: "KIA", Model: "OPTIMA" }, { Make: "KIA", Model: "RIO" }, { Make: "KIA", Model: "SEDONA" }, { Make: "KIA", Model: "SELTOS" }, { Make: "KIA", Model: "SORENTO" }, { Make: "KIA", Model: "SOUL" }, { Make: "KIA", Model: "SOUL EV" }, { Make: "KIA", Model: "SPORTAGE" }, { Make: "KIA", Model: "STINGER" }, { Make: "KIA", Model: "TELLURIDE" }, { Make: "KOVATCH", Model: "FIRETRUCK" }, { Make: "LAMBORGHINI", Model: "AVENTADOR" }, { Make: "LAMBORGHINI", Model: "HURACAN" }, { Make: "LAMBORGHINI", Model: "URUS" }, { Make: "LAND ROVER", Model: "DEFENDER" }, { Make: "LAND ROVER", Model: "DISCOVERY" }, { Make: "LAND ROVER", Model: "DISCOVERY SPORT" }, { Make: "LAND ROVER", Model: "RANGE ROVER" }, { Make: "LAND ROVER", Model: "RANGE ROVER EVOQUE" }, { Make: "LAND ROVER", Model: "RANGE ROVER SPORT" }, { Make: "LAND ROVER", Model: "RANGE ROVER VELAR" }, { Make: "LEXUS", Model: "CT" }, { Make: "LEXUS", Model: "ES" }, { Make: "LEXUS", Model: "GS" }, { Make: "LEXUS", Model: "GS-F" }, { Make: "LEXUS", Model: "GX" }, { Make: "LEXUS", Model: "IS" }, { Make: "LEXUS", Model: "LC" }, { Make: "LEXUS", Model: "LS" }, { Make: "LEXUS", Model: "LX" }, { Make: "LEXUS", Model: "NX" }, { Make: "LEXUS", Model: "RC" }, { Make: "LEXUS", Model: "RC-F" }, { Make: "LEXUS", Model: "RX" }, { Make: "LEXUS", Model: "UX" }, { Make: "LINCOLN", Model: "AVIATOR" }, { Make: "LINCOLN", Model: "CONTINENTAL" }, { Make: "LINCOLN", Model: "CORSAIR" }, { Make: "LINCOLN", Model: "MKC" }, { Make: "LINCOLN", Model: "MKT" }, { Make: "LINCOLN", Model: "MKX" }, { Make: "LINCOLN", Model: "MKZ" }, { Make: "LINCOLN", Model: "NAUTILUS" }, { Make: "LINCOLN", Model: "NAVIGATOR" }, { Make: "LION EBUS", Model: "LION C V1" }, { Make: "LION EBUS", Model: "LION C V2" }, { Make: "LOTUS", Model: "EVORA" }, { Make: "LUCID MOTORS", Model: "AIR" }, { Make: "MACK", Model: "400" }, { Make: "MACK", Model: "500" }, { Make: "MACK", Model: "600" }, { Make: "MACK", Model: "700" }, { Make: "MACK", Model: "800" }, { Make: "MACK", Model: "ANTHEM" }, { Make: "MACK", Model: "GRANITE" }, { Make: "MACK", Model: "LR" }, { Make: "MACK", Model: "MD" }, { Make: "MACK", Model: "PINNACLE" }, { Make: "MACK", Model: "TERRAPRO" }, { Make: "MASERATI", Model: "GHIBLI" }, { Make: "MASERATI", Model: "GRANTURISMO" }, { Make: "MASERATI", Model: "LEVANTE" }, { Make: "MASERATI", Model: "MC20" }, { Make: "MASERATI", Model: "QUATTROPORTE" }, { Make: "MAZDA", Model: "3" }, { Make: "MAZDA", Model: "6" }, { Make: "MAZDA", Model: "CX-3" }, { Make: "MAZDA", Model: "CX-30" }, { Make: "MAZDA", Model: "CX-5" },
+			{ Make: "MAZDA", Model: "CX-50" }, { Make: "MAZDA", Model: "CX-9" }, { Make: "MAZDA", Model: "MX-30" }, { Make: "MAZDA", Model: "MX-5 MIATA" }, { Make: "MCLAREN AUTOMOTIVE", Model: "540C" }, { Make: "MCLAREN AUTOMOTIVE", Model: "570GT" }, { Make: "MCLAREN AUTOMOTIVE", Model: "570S" }, { Make: "MCLAREN AUTOMOTIVE", Model: "600LT" }, { Make: "MCLAREN AUTOMOTIVE", Model: "620R" }, { Make: "MCLAREN AUTOMOTIVE", Model: "720S" }, { Make: "MCLAREN AUTOMOTIVE", Model: "765LT" }, { Make: "MCLAREN AUTOMOTIVE", Model: "GT" }, { Make: "MCLAREN AUTOMOTIVE", Model: "SENNA" }, { Make: "MCLAREN AUTOMOTIVE", Model: "SENNA GTR" }, { Make: "MCLAREN AUTOMOTIVE", Model: "SPEEDTAIL" }, { Make: "MERCEDES-BENZ", Model: "A" }, { Make: "MERCEDES-BENZ", Model: "AMG GT" }, { Make: "MERCEDES-BENZ", Model: "B" }, { Make: "MERCEDES-BENZ", Model: "C" }, { Make: "MERCEDES-BENZ", Model: "CLA" }, { Make: "MERCEDES-BENZ", Model: "CLS" }, { Make: "MERCEDES-BENZ", Model: "E" }, { Make: "MERCEDES-BENZ", Model: "EQB" }, { Make: "MERCEDES-BENZ", Model: "EQS" }, { Make: "MERCEDES-BENZ", Model: "G" }, { Make: "MERCEDES-BENZ", Model: "GLA" }, { Make: "MERCEDES-BENZ", Model: "GLB" }, { Make: "MERCEDES-BENZ", Model: "GLB 250" }, { Make: "MERCEDES-BENZ", Model: "GLC" }, { Make: "MERCEDES-BENZ", Model: "GLC COUPE" }, { Make: "MERCEDES-BENZ", Model: "GLE" }, { Make: "MERCEDES-BENZ", Model: "GLE COUPE" }, { Make: "MERCEDES-BENZ", Model: "GLS" }, { Make: "MERCEDES-BENZ", Model: "METRIS" }, { Make: "MERCEDES-BENZ", Model: "S" }, { Make: "MERCEDES-BENZ", Model: "SL" }, { Make: "MERCEDES-BENZ", Model: "SLC" }, { Make: "MERCEDES-BENZ", Model: "SPRINTER" }, { Make: "MINI", Model: "COOPER" }, { Make: "MITSUBISHI", Model: "ECLIPSE CROSS" }, { Make: "MITSUBISHI", Model: "I MIEV" }, { Make: "MITSUBISHI", Model: "LANCER" }, { Make: "MITSUBISHI", Model: "MIRAGE" }, { Make: "MITSUBISHI", Model: "OUTLANDER" }, { Make: "MITSUBISHI", Model: "OUTLANDER SPORT" }, { Make: "MITSUBISHI FUSO TRUCK OF AMERICA INC", Model: "ECANTER" }, { Make: "MITSUBISHI FUSO TRUCK OF AMERICA INC", Model: "FE" }, { Make: "MITSUBISHI FUSO TRUCK OF AMERICA INC", Model: "FG" }, { Make: "MOTOR COACH INDUSTRIES", Model: "D4000/D4500" }, { Make: "MOTOR COACH INDUSTRIES", Model: "D40CRT/D45CRT" }, { Make: "MOTOR COACH INDUSTRIES", Model: "TRANSIT BUS" }, { Make: "NEW FLYER", Model: "MIDI" }, { Make: "NEW FLYER", Model: "XCELSIOR" }, { Make: "NISSAN", Model: "370Z" }, { Make: "NISSAN", Model: "ALTIMA" }, { Make: "NISSAN", Model: "ARMADA" }, { Make: "NISSAN", Model: "FRONTIER" }, { Make: "NISSAN", Model: "GT-R" }, { Make: "NISSAN", Model: "JUKE" }, { Make: "NISSAN", Model: "KICKS" }, { Make: "NISSAN", Model: "LEAF" }, { Make: "NISSAN", Model: "MAXIMA" }, { Make: "NISSAN", Model: "MURANO" }, { Make: "NISSAN", Model: "NV" }, { Make: "NISSAN", Model: "NV200" }, { Make: "NISSAN", Model: "PATHFINDER" }, { Make: "NISSAN", Model: "ROGUE" }, { Make: "NISSAN", Model: "ROGUE SPORT" }, { Make: "NISSAN", Model: "SENTRA" }, { Make: "NISSAN", Model: "TITAN" }, { Make: "NISSAN", Model: "TITAN XD" }, { Make: "NISSAN", Model: "VERSA" }, { Make: "NISSAN", Model: "VERSA NOTE" }, { Make: "NOVA BUS CORPORATION", Model: "BUS" }, { Make: "OSHKOSH MOTOR TRUCK CO.", Model: "CONVENTIONAL" }, { Make: "OSHKOSH MOTOR TRUCK CO.", Model: "LOW TILT" }, { Make: "OSHKOSH MOTOR TRUCK CO.", Model: "M" }, { Make: "OSHKOSH MOTOR TRUCK CO.", Model: "S SERIES" }, { Make: "PETERBILT", Model: "220" }, { Make: "PETERBILT", Model: "320" }, { Make: "PETERBILT", Model: "325" }, { Make: "PETERBILT", Model: "330" }, { Make: "PETERBILT", Model: "337" }, { Make: "PETERBILT", Model: "348" }, { Make: "PETERBILT", Model: "365" }, { Make: "PETERBILT", Model: "367" }, { Make: "PETERBILT", Model: "389" }, { Make: "PETERBILT", Model: "520" }, { Make: "PETERBILT", Model: "536" }, { Make: "PETERBILT", Model: "537" }, { Make: "PETERBILT", Model: "548" }, { Make: "PETERBILT", Model: "567" }, { Make: "PETERBILT", Model: "579" }, { Make: "PETERBILT", Model: "587" }, { Make: "PIERCE MFG. INC.", Model: "PIERCE" }, { Make: "POLESTAR", Model: "1" }, { Make: "POLESTAR", Model: "2" }, { Make: "PORSCHE", Model: "911" }, { Make: "PORSCHE", Model: "BOXSTER" }, { Make: "PORSCHE", Model: "CAYENNE" },
+			{ Make: "PORSCHE", Model: "CAYMAN" }, { Make: "PORSCHE", Model: "MACAN" }, { Make: "PORSCHE", Model: "PANAMERA" }, { Make: "PORSCHE", Model: "TAYCAN" }, { Make: "PREVOST", Model: "BUS" }, { Make: "PROTERRA", Model: "TRANSIT BUS 35FT" }, { Make: "PROTERRA", Model: "TRANSIT BUS 40FT" }, { Make: "RAM", Model: "1500" }, { Make: "RAM", Model: "1500 CLASSIC" }, { Make: "RAM", Model: "2500" }, { Make: "RAM", Model: "3500" }, { Make: "RAM", Model: "4500" }, { Make: "RAM", Model: "5500" }, { Make: "RAM", Model: "PROMASTER 1500" }, { Make: "RAM", Model: "PROMASTER 2500" }, { Make: "RAM", Model: "PROMASTER 3500" }, { Make: "RAM", Model: "PROMASTER CITY" }, { Make: "RIVIAN", Model: "R1S" }, { Make: "RIVIAN", Model: "R1T" }, { Make: "ROLLS-ROYCE", Model: "CULLINAN" }, { Make: "ROLLS-ROYCE", Model: "DAWN" }, { Make: "ROLLS-ROYCE", Model: "GHOST" }, { Make: "ROLLS-ROYCE", Model: "PHANTOM" }, { Make: "ROLLS-ROYCE", Model: "WRAITH" }, { Make: "ROSENBAUER AMERICA", Model: "GLIDER" }, { Make: "ROSENBAUER AMERICA", Model: "MUNICIPAL" }, { Make: "ROSENBAUER AMERICA", Model: "RIV FIRE" }, { Make: "SMART", Model: "FORTWO" }, { Make: "SPARTAN MOTORS", Model: "FIRETRUCK" }, { Make: "SPARTAN MOTORS", Model: "MOTORHOME" }, { Make: "SUBARU", Model: "ASCENT" }, { Make: "SUBARU", Model: "BRZ" }, { Make: "SUBARU", Model: "CROSSTREK" }, { Make: "SUBARU", Model: "FORESTER" }, { Make: "SUBARU", Model: "IMPREZA" }, { Make: "SUBARU", Model: "LEGACY" }, { Make: "SUBARU", Model: "OUTBACK" }, { Make: "SUBARU", Model: "WRX" }, { Make: "SUTPHEN CORP.", Model: "FIRETRUCK" }, { Make: "TEMSA BUS", Model: "TS30" }, { Make: "TEMSA BUS", Model: "TS35" }, { Make: "TEMSA BUS", Model: "TS45" }, { Make: "TEREX / TEREX ADVANCE", Model: "ADVANCE MIXER" }, { Make: "TESLA", Model: "MODEL 3" }, { Make: "TESLA", Model: "MODEL S" }, { Make: "TESLA", Model: "MODEL X" }, { Make: "TESLA", Model: "MODEL Y" }, { Make: "THOMAS", Model: "SCHOOL BUS" }, { Make: "THOMAS", Model: "TRANSIT BUS" }, { Make: "TIFFIN MOTORHOMES INC", Model: "ALLEGRO BAY" }, { Make: "TIFFIN MOTORHOMES INC", Model: "ALLEGRO BUS" }, { Make: "TIFFIN MOTORHOMES INC", Model: "BREEZE" }, { Make: "TIFFIN MOTORHOMES INC", Model: "PHAETON" }, { Make: "TIFFIN MOTORHOMES INC", Model: "ZEPHYR" }, { Make: "TOYOTA", Model: "4RUNNER" }, { Make: "TOYOTA", Model: "86" }, { Make: "TOYOTA", Model: "AVALON" }, { Make: "TOYOTA", Model: "BZ4X" }, { Make: "TOYOTA", Model: "C-HR" }, { Make: "TOYOTA", Model: "CAMRY" }, { Make: "TOYOTA", Model: "COROLLA" }, { Make: "TOYOTA", Model: "COROLLA CROSS" }, { Make: "TOYOTA", Model: "COROLLA IM" }, { Make: "TOYOTA", Model: "GR 86" }, { Make: "TOYOTA", Model: "HIGHLANDER" }, { Make: "TOYOTA", Model: "LAND CRUISER" }, { Make: "TOYOTA", Model: "MIRAI" }, { Make: "TOYOTA", Model: "PRIUS" }, { Make: "TOYOTA", Model: "PRIUS C" }, { Make: "TOYOTA", Model: "PRIUS PRIME" }, { Make: "TOYOTA", Model: "PRIUS V" }, { Make: "TOYOTA", Model: "RAV4" }, { Make: "TOYOTA", Model: "RAV4 HV" }, { Make: "TOYOTA", Model: "RAV4 PRIME" }, { Make: "TOYOTA", Model: "SEQUOIA" }, { Make: "TOYOTA", Model: "SIENNA" }, { Make: "TOYOTA", Model: "SUPRA" }, { Make: "TOYOTA", Model: "TACOMA" }, { Make: "TOYOTA", Model: "TUNDRA" }, { Make: "TOYOTA", Model: "VENZA" }, { Make: "TOYOTA", Model: "YARIS" }, { Make: "TOYOTA", Model: "YARIS IA" }, { Make: "VAN HOOL", Model: "COMMUTER COACH CX" }, { Make: "VAN HOOL", Model: "TDX DOUBLE DECK COACH" }, { Make: "VAN HOOL", Model: "TOURIST COACH TX" }, { Make: "VAN HOOL", Model: "TRANSIT BUS" }, { Make: "VOLKSWAGEN", Model: "ARTEON" }, { Make: "VOLKSWAGEN", Model: "ATLAS" }, { Make: "VOLKSWAGEN", Model: "ATLAS CROSS SPORT" }, { Make: "VOLKSWAGEN", Model: "BEETLE" }, { Make: "VOLKSWAGEN", Model: "CC" }, { Make: "VOLKSWAGEN", Model: "E-GOLF" }, { Make: "VOLKSWAGEN", Model: "GOLF" }, { Make: "VOLKSWAGEN", Model: "GOLF ALLTRACK" }, { Make: "VOLKSWAGEN", Model: "GOLF R" }, { Make: "VOLKSWAGEN", Model: "GOLF SPORTWAGEN" }, { Make: "VOLKSWAGEN", Model: "GTI" }, { Make: "VOLKSWAGEN", Model: "ID.4" }, { Make: "VOLKSWAGEN", Model: "JETTA" }, { Make: "VOLKSWAGEN", Model: "PASSAT" },
+			{ Make: "VOLKSWAGEN", Model: "TAOS" }, { Make: "VOLKSWAGEN", Model: "TIGUAN" }, { Make: "VOLKSWAGEN", Model: "TIGUAN LIMITED" }, { Make: "VOLVO", Model: "9700" }, { Make: "VOLVO", Model: "C40" }, { Make: "VOLVO", Model: "S60" }, { Make: "VOLVO", Model: "S60 CROSS COUNTRY" }, { Make: "VOLVO", Model: "S90" }, { Make: "VOLVO", Model: "V60" }, { Make: "VOLVO", Model: "V60 CROSS COUNTRY" }, { Make: "VOLVO", Model: "V90" }, { Make: "VOLVO", Model: "V90 CROSS COUNTRY" }, { Make: "VOLVO", Model: "VA" }, { Make: "VOLVO", Model: "VAH" }, { Make: "VOLVO", Model: "VHD" }, { Make: "VOLVO", Model: "VN" }, { Make: "VOLVO", Model: "VNR" }, { Make: "VOLVO", Model: "XC40" }, { Make: "VOLVO", Model: "XC60" }, { Make: "VOLVO", Model: "XC90" }, { Make: "WESTERN STAR/AUTO CAR", Model: "5700 XE" }, { Make: "WESTERN STAR/AUTO CAR", Model: "CONVENTIONAL" }, { Make: "WESTERN STAR/AUTO CAR", Model: "NEW 4900 CHASSIS" }, { Make: "XOS", Model: "SA01" }, { Make: "XOS", Model: "SV01" }
+		];
+		$(function () {
+			$(":input").inputmask();
+			$("#form_email").inputmask({ alias: "email" });
+			$("#estimate_form").validate({
+				rules: {
+					year: "required",
+					make: "required",
+					model: "required",
+					trim: "required",
+					mileage: {
+						required: true,
+						min: 0,
+						max: 100000
+					},
+					vin: {
+						required: true,
+						minlength: 17,
+						maxlength: 17
+					}
+				},
+				messages: {
+					year: "Vehicle Year is required",
+					make: "Vehicle Make is required",
+					model: "Vehicle Model is required",
+					trim: "Vehicle Trim is required",
+					mileage: "Vehicle Mileage must be between 0 and 60,000 miles",
+					vin: "Vehicle Identification Number must be provided"
+				}
+			});
+
+			$("#form_make")
+				.empty()
+				.append("<option selected value=\"\">Select</option>" + makeModel.map((item) => { return item.Make; }).filter((item, index, array) => { return array.indexOf(item) == index; }).map((item) => { return " <option value =\"" + item + "\">" + item + "</option>"; }))
+				.val("");
+
+			$("#form_make").on(
+				"change keyup",
+				(event) => {
+					let make = $("#form_make").val();
+					$("#form_model")
+						.empty()
+						.append("<option selected value=\"\">Select</option>" + makeModel.filter((item) => { return item.Make == make; }).map((item) => { return item.Model; }).map((item) => { return " <option value =\"" + item + "\">" + item + "</option>"; }))
+						.val("")
+						.prop("disabled", false)
+						.prop("readonly", false);
+				});
+
+			$("#estimate_form").submit(
+				(event) => {
+					preventEvent(event);
+					var form = $("#estimate_form");
+					if (form.valid()) {
+						formSubmit({
+							form: form,
+							url: "/Estimate",
+							successFunction: function (data) {
+                                
+								if (data === true) {
+									window.location = "/Estimate";
+								}
+							}
+						});
+					}
+				});
+
+			$("#submit_estimate").on(
+				"click select",
+				(event) => {
+					$("#estimate_form").submit();
+				});
+		});
+	</script>
+}

@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<Nullable>disable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<RootNamespace>AAC.SelfServiceVSC</RootNamespace>
+		<VersionPrefix Condition="'$(DesignTimeBuild)' != 'true' OR '$(BuildingProject)' == 'true'">
+			0.0.$([System.DateTime]::UtcNow.ToString("MMdd")).$([System.DateTime]::UtcNow.ToString("HHmm"))
+		</VersionPrefix>
+		<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+	  <UserSecretsId>f3b3c2f4-a2e7-4420-8d19-33854fa9dfc9</UserSecretsId>
+	  <ApplicationIcon />
+	  <OutputType>Exe</OutputType>
+	  <StartupObject />
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MailKit" Version="4.1.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Logger\Logger.csproj" />
+
+		<!-- currently required for the Line5 stuff which is all commented out -->
+		<ProjectReference Include="..\..\FastDB\FastDB.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="wwwroot\Images\" />
+	</ItemGroup>
+
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+	  <Exec Command="gulp $(Configuration)" />
+	</Target>
+
+</Project>

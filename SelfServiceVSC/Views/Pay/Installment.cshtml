@@ -1,0 +1,290 @@
+@using AAC.SelfServiceVSC
+@using AAC.SelfServiceVSC.Models
+
+@{
+	ViewData["Title"] = "Payment Details";
+}
+
+@* todo(rec): design could be better, check mobile, doesn't tell you what you're buying. *@
+
+<form id="payment_form" name="payment_form" method="post" action="/Payment" style="display:none">
+	<div class="container row mt-3" id="quoteUpdateDetails">
+		<div class="col-md-12">
+			<div class="card transparent">
+				<div class="card-header">
+					<h4 class="text-center">Payment Details</h4>
+				</div>
+				<div class="card-body">
+					<div class="accordion">
+						<div class="accordion-item">
+							<h4 class="accordion-header text-center">
+								<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#payment_card"
+									aria-expanded="true" aria-controls="payment_card">
+									Credit Card
+								</button>
+							</h4>
+							<div id="payment_card" class="accordion-collapse collapse show">
+								<div class="accordion-body">
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="form_lname">Name</label>
+											<input type="text" name="payment_card_name" id="form_payment_card_name" class="form-control"
+												value="" placeholder="Name" />
+										</div>
+										<div class="form-group col-md-6">
+											<label for="form_lname">Card Number</label>
+											<input type="text" name="payment_card_number" id="form_payment_card_number" class="form-control"
+												value="" placeholder="####-####-####-####" inputmode="numeric" />
+										</div>
+									</div>
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="form_lname">CVV</label>
+											<input type="text" name="payment_card_cvv" id="form_payment_card_cvv" class="form-control"
+												value="" placeholder="CVV" maxlength="3" inputmode="numeric" />
+										</div>
+										<div class="form-group col-md-6">
+											<label for="form_lname">Expiration Date</label>
+											<input type="text" name="payment_card_expiration" id="form_payment_card_expiration"
+												class="form-control" value="" data-inputmask="'regex': '\\d{1,2}/\\d{4}'" inputmode="numeric" />
+										</div>
+									</div>
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="form_lname">ZIP Code</label>
+											<input type="text" name="payment_card_zip_code" id="form_payment_card_zip_code"
+												class="form-control" value="" placeholder="ZIP Code" maxlength="10" inputmode="numeric" />
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="accordion-item">
+							<h4 class="accordion-header text-center">
+								<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#bank_account"
+									aria-expanded="true" aria-controls="bank_account">
+									Bank Account (ACH)
+								</button>
+							</h4>
+							<div id="bank_account" class="accordion-collapse collapse">
+								<div class="accordion-body">
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="form_lname">Bank Name</label>
+											<input type="text" name="bank_transfer_name" id="form_bank_transfer_name" class="form-control"
+												value="" placeholder="Name" />
+										</div>
+										<div class="form-group col-md-6">
+											<label for="form_lname">Account Type (Checking Only)</label>
+											<select name="bank_transfer_account_type" id="form_bank_transfer_account_type"
+												class="form-control">
+												<option selected value="checking">Checking</option>
+											</select>
+										</div>
+									</div>
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="form_lname">Routing Number</label>
+											<input type="text" name="bank_transfer_routing_number" id="form_bank_transfer_routing_number"
+												class="form-control" value="" placeholder="" inputmode="numeric" />
+										</div>
+										<div class="form-group col-md-6">
+											<label for="form_lname">Account Number</label>
+											<input type="text" name="bank_transfer_account_number" id="form_bank_transfer_account_number"
+												class="form-control" value="" placeholder="" inputmode="numeric" />
+										</div>
+									</div>
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="form_lname">Routing Number (Confirm)</label>
+											<input type="text" name="bank_transfer_routing_number_confirmation"
+												id="form_bank_transfer_routing_number_confirmation" class="form-control" value=""
+												inputmode="numeric" />
+										</div>
+										<div class="form-group col-md-6">
+											<label for="form_lname">Account Number (Confirm)</label>
+											<input type="text" name="bank_transfer_account_number_confirmation"
+												id="form_bank_transfer_account_number_confirmation" class="form-control" value=""
+												inputmode="numeric" />
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row mt-2">
+						<div class="form-group col-12">
+							<input type="checkbox" name="digitally_signed" id="form_digitally_signed" />
+							<label for="form_digitally_signed">I hereby certify that the above information is true and correct</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+<form id="payment_form" name="payment_form" method="post" action="/Payment">
+	<div class="container row mt-3" id="quoteUpdateDetails">
+		<div class="col-md-12">
+			<div class="card transparent">
+				<div class="card-header">
+					<h4 class="text-center">Payment Details</h4>
+				</div>
+				<div class="card-body">
+					<div class="accordion">
+						<div class="accordion-item">
+							<h4 class="accordion-header text-center">
+								<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#payment_card"
+									aria-expanded="true" aria-controls="payment_card">
+									Credit Card
+								</button>
+							</h4>
+							<div id="payment_card" class="accordion-collapse collapse show">
+								<div class="accordion-body">
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="form_lname">Name</label>
+											<input type="text" name="payment_card_name" id="form_payment_card_name" class="form-control"
+												value="" placeholder="Name" />
+										</div>
+										<div class="form-group col-md-6">
+											<label for="form_lname">Card Number</label>
+											<input type="text" name="payment_card_number" id="form_payment_card_number" class="form-control"
+												value="" placeholder="####-####-####-####" inputmode="numeric" />
+										</div>
+									</div>
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="form_lname">CVV</label>
+											<input type="text" name="payment_card_cvv" id="form_payment_card_cvv" class="form-control"
+												value="" placeholder="CVV" maxlength="3" inputmode="numeric" />
+										</div>
+										<div class="form-group col-md-6">
+											<label for="form_lname">Expiration Date</label>
+											<input type="text" name="payment_card_expiration" id="form_payment_card_expiration"
+												class="form-control" value="" data-inputmask="'regex': '\\d{1,2}/\\d{4}'" inputmode="numeric" />
+										</div>
+									</div>
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="form_lname">ZIP Code</label>
+											<input type="text" name="payment_card_zip_code" id="form_payment_card_zip_code"
+												class="form-control" value="" placeholder="ZIP Code" maxlength="10" inputmode="numeric" />
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="accordion-item">
+							<h4 class="accordion-header text-center">
+								<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#bank_account"
+									aria-expanded="true" aria-controls="bank_account">
+									Bank Account (ACH)
+								</button>
+							</h4>
+							<div id="bank_account" class="accordion-collapse collapse">
+								<div class="accordion-body">
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="form_lname">Bank Name</label>
+											<input type="text" name="bank_transfer_name" id="form_bank_transfer_name" class="form-control"
+												value="" placeholder="Name" />
+										</div>
+										<div class="form-group col-md-6">
+											<label for="form_lname">Account Type (Checking Only)</label>
+											<select name="bank_transfer_account_type" id="form_bank_transfer_account_type"
+												class="form-control">
+												<option selected value="checking">Checking</option>
+											</select>
+										</div>
+									</div>
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="form_lname">Routing Number</label>
+											<input type="text" name="bank_transfer_routing_number" id="form_bank_transfer_routing_number"
+												class="form-control" value="" placeholder="" inputmode="numeric" />
+										</div>
+										<div class="form-group col-md-6">
+											<label for="form_lname">Account Number</label>
+											<input type="text" name="bank_transfer_account_number" id="form_bank_transfer_account_number"
+												class="form-control" value="" placeholder="" inputmode="numeric" />
+										</div>
+									</div>
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="form_lname">Routing Number (Confirm)</label>
+											<input type="text" name="bank_transfer_routing_number_confirmation"
+												id="form_bank_transfer_routing_number_confirmation" class="form-control" value=""
+												inputmode="numeric" />
+										</div>
+										<div class="form-group col-md-6">
+											<label for="form_lname">Account Number (Confirm)</label>
+											<input type="text" name="bank_transfer_account_number_confirmation"
+												id="form_bank_transfer_account_number_confirmation" class="form-control" value=""
+												inputmode="numeric" />
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row mt-2">
+						<div class="form-group col-12">
+							<input type="checkbox" name="digitally_signed" id="form_digitally_signed" />
+							<label for="form_digitally_signed">I hereby certify that the above information is true and correct</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+<div class="text-center mt-3">
+	<button class="btn btn-success" id="finalize_loan">
+		Purchase
+	</button>
+</div>
+
+@section Scripts
+	{
+	<style type="text/css">
+		body {
+			background-image: linear-gradient(white 20%, transparent 30%, transparent 70%, white 80%), url('/img/bg/bg04.jpg');
+		}
+	</style>
+	<script type="text/javascript">
+		$(function () {
+			$(":input").inputmask();
+
+			$("#finalize_loan").on(
+				"click select",
+				(event) => {
+					preventEvent(event);
+
+					if ($("#form_digitally_signed").is(":checked")) {
+
+						if (confirm("This action will electronically sign the contract and schedule the first payment for 30 days from today. Proceed?")) {
+							formSubmit({
+								form: $("#payment_form"),
+								url: "/FinalizeLoan",
+								successFunction: function (data) {
+									if (data === false) {
+										// Something has gone wrong, we need to handle this visually
+									}
+									else {
+										// Save documents locally, display loan/contract IDs, print
+									}
+								}
+							});
+						}
+					}
+					else {
+						$("#form_digitally_signed").siblings("label").addclass("fw-bold text-danger");
+						$("#form_digitally_signed").focus();
+					}
+				});
+		});
+	</script>
+}

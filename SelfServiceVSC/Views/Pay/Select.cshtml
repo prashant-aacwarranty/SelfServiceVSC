@@ -1,0 +1,12 @@
+@using AAC.SelfServiceVSC
+@using AAC.SelfServiceVSC.Models
+@{
+	ViewData["Title"] = "Payment Select";
+}
+
+<div class="col-12 text-center">
+	<span class="h3 text-primary" id="payment_plan" role="button">Payment Plan</span>
+	<aside>Set up recurring auto-pay</aside>
+	@Url.Action("", "");
+	<span class="h3 text-success" id="pay_in_full" role="button">Pay in Full Today</span>
+</div>

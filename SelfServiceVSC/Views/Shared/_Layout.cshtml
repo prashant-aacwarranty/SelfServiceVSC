@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	@* todo(rec): maybe some nice SEO things *@
+	<title>@ViewData["Title"] - AAC Direct</title>
+	<meta name="description" content="" />
+
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-KN8X85TMB3"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag() { dataLayer.push(arguments); }
+		gtag('js', new Date());
+
+		gtag('config', 'G-KN8X85TMB3');
+	</script>
+
+	@if (SelfServiceVSC.AppSettings.IsDevelopment)
+
+
+
+	{
+		<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+		<link rel="stylesheet" href="~/lib/swiper/swiper-bundle.css" />
+		<link rel="stylesheet" href="~/lib/glightbox/dist/css/glightbox.css" />
+		<link rel="stylesheet" href="~/lib/fontawesome-free/css/all.css" />
+		<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	}
+
+
+
+	else
+
+
+
+	{
+		<link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true">
+	}
+</head>
+
+<body>
+	<header class="page-head">
+		<div class="rd-navbar-wrap">
+			<nav class="rd-navbar rd-navbar-corporate-light" data-layout="rd-navbar-fixed" data-sm-layout="rd-navbar-fixed"
+				data-md-device-layout="rd-navbar-fixed" data-md-layout="rd-navbar-fixed" data-lg-layout="rd-navbar-static"
+				data-xl-layout="rd-navbar-static" data-xxl-layout="rd-navbar-static" data-lg-device-layout="rd-navbar-static"
+				data-xl-device-layout="rd-navbar-static" data-xxl-device-layout="rd-navbar-static" data-stick-up-clone="false"
+				data-md-stick-up-offset="53px" data-lg-stick-up-offset="53px" data-md-stick-up="true" data-lg-stick-up="true">
+				<div class="rd-navbar-inner">
+					<div class="rd-navbar-aside-wrap">
+						<div class="rd-navbar-aside">
+							<div class="rd-navbar-aside-toggle" data-rd-navbar-toggle=".rd-navbar-aside"><span></span></div>
+							<div class="rd-navbar-aside-content">
+								<ul class="rd-navbar-aside-group list-units">
+									@if (SelfServiceVSC.AppSettings.IsDevelopment)
+
+
+
+									{
+										<li>
+											<div class="unit flex-row unit-spacing-xs align-items-center error">
+												Testing Mode - No transactions in this system will persist
+											</div>
+										</li>
+									}
+									<li>
+										<div class="unit flex-row unit-spacing-xs align-items-center">
+											<div class="unit-left"><span class="icon icon-xxs icon-cello material-icons-phone"></span></div>
+											<div class="unit-body"><a class="link-secondary"
+													href="tel:@SelfServiceVSC.AppSettings.PhoneNumberMain">@SelfServiceVSC.AppSettings.PhoneNumberMain.FormatPhone()</a>
+											</div>
+										</div>
+									</li>
+									<li>
+										<div class="unit flex-row unit-spacing-xs align-items-center">
+											<div class="unit-left"><span class="icon icon-xxs-small icon-cello fa-envelope-o"></span></div>
+											<div class="unit-body"><a class="link-secondary" href="mailto:#">info@aacwarranty.com</a></div>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div class="rd-navbar-group">
+						<div class="rd-navbar-panel">
+							<button class="rd-navbar-toggle" data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button><a
+								class="rd-navbar-brand brand" href="/">@if (SelfServiceVSC.AppSettings.IsDevelopment)
+
+								{
+									<img src="img/brand_test.png" width="118" height="34" alt="">
+								}
+
+								else
+
+								{
+									<img src="img/brand.png" width="118" height="34" alt="">
+								}</a>
+						</div>
+						<div class="rd-navbar-nav-wrap">
+							<div class="rd-navbar-nav-inner">
+								<ul class="rd-navbar-nav">
+									<li><a href="/">Home</a></li>
+									<li><a href="#">Coverage Details</a>
+										<ul class="rd-navbar-dropdown">
+											<li><a href="#" class="whatiscovered">What is Covered?</a></li>
+											<li><a href="#" class="whatiscoverednot">What is Not Covered?</a></li>
+											<li><a href="#" class="whatiscoveredchart">Coverage Chart</a></li>
+										</ul>
+									</li>
+									@* todo: if we get some content for this, great *@
+									@* <li><a href="/About">About Us</a></li> *@
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</nav>
+		</div>
+	</header>
+	<div class="container main">
+		<main id="main" role="main" class="pb-3">
+			@RenderBody()
+		</main>
+	</div>
+	<footer class="page-foot bg-cello">
+		<section class="section-35">
+			<div class="container text-center">
+				<div class="row flex-row-md-reverse justify-content-md-between align-items-md-center row-15">
+					<div class="col-md-6 text-md-start">
+						<p class="rights text-white"><span
+								id="copyright-year"></span><span>&nbsp;&#169;&nbsp;@DateTime.Now.Year</span><span>American Assurance
+								Corporation&nbsp;</span></p>
+					</div>
+				</div>
+			</div>
+		</section>
+	</footer>
+	<div class="modal fade d-none" id="whatiscovered" tabindex="-1" role="dialog" aria-labelledby="whatiscovered_title"
+		aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="modal-title" id="whatiscovered_title">What is Covered?</h3>
+				</div>
+				<div class="modal-body">
+					<h6>We ONLY offer premium, top-level comprehensive coverage. Why compromise your peace-of-mind by choosing a
+						lower coverage level from another company?</h6>
+
+					<ul>
+						<li>
+							<p class="fw-bold text-decoration-underline">Premium Coverage</p>
+							<ul>
+								<li class="fw-bold">Covers the failure of ALL mechanical, electrical, and electronic vehicle components
+								</li>
+								<li class="fst-italic">(except those listed under the “What Is Not Covered” section of the contract -
+									see "What is Not Covered" link or in your contract)</li>
+							</ul>
+						</li>
+						<li>
+							<p class="fw-bold text-decoration-underline">Additional Benefits Included With Your Premium Coverage:</p>
+							<ul>
+								<li>
+									<p class="fw-bold">Car Rental Reimbursement</p>
+									<ul>
+										<li>So you have something to drive while your covered vehicle is being repaired</li>
+									</ul>
+								</li>
+								<li>
+									<p class="fw-bold">Travel Expense Reimbursement</p>
+									<ul>
+										<li>Up to $150/day for hotel room and meals when you experience a break down more than 150 miles
+											from your home</li>
+									</ul>
+								</li>
+								<li>
+									<p class="fw-bold">24-Hour Nationwide Roadside Assistance</p>
+									<ul>
+										<li>Towing (up to 200 miles, covered breakdowns); Jump Start; Out of Fuel Delivery; Flat Tire Change
+											(with Your spare); Lockout Service; and Navigation Assistance 24 hours a day</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade d-none" id="whatiscoverednot" tabindex="-1" role="dialog"
+		aria-labelledby="whatiscoverednot_title" aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="modal-title" id="whatiscoverednot_title">What is <span class="color-dtcred">Not</span> Covered?
+					</h3>
+				</div>
+				<div class="modal-body">
+					<h6>MAINTENANCE SERVICES/MAINTENANCE PARTS DESCRIBED IN THE VEHICLE’S OWNER’S MANUAL</h6>
+
+					<p class="fw-bold">COMPONENTS THAT ARE COVERED BY VEHICLE INSURANCE OR COMPONENTS THAT DO NOT EXPERIENCE
+						MECHANICAL BREAKDOWN:</p>
+					<ul>
+						<li>DAMAGE CAUSED BY COLLISION, THEFT, ETC</li>
+						<li>CONVERTIBLE TOP, CONVERTIBLE TOP FRAME ASSEMBLY, VEHICLE FRAME, SEAT FRAMES, BUMPERS, BODY SHEET METAL
+							OR PANELS, UPHOLSTERY, FABRIC, WEATHER STRIPPING, TRIM, MOLDINGS, BRIGHT METAL, CHROME, CARPET, PAINT,
+							OUTSIDE ORNAMENTATION, TIRES, WHEELS/RIMS, NUTS, BOLTS, FASTENERS, ANY GLASS OR GLASS COMPONENT, LENSES,
+							SEALED BEAMS/HEADLIGHTS, HEADLIGHT ASSEMBLIES, TAIL LAMP AND TAIL LAMP ASSEMBLIES, ILLUMINATION DEVICES,
+							LIGHT BULBS, LED LIGHTING AND LED-LIGHTING-COOLING SYSTEMS.</li>
+						<li>FLUID CAPS, FLUID RESERVOIRS, SAFETY RESTRAINT BELTS, AIR BAG, BATTERY, FUSES, CARBURETOR, EMISSION
+							COMPONENTS, EXHAUST SYSTEM, EXHAUST PIPES, MUFFLER, RESONATOR, CATALYTIC CONVERTER, DISTRIBUTOR CAP AND
+							ROTOR, POINTS</li>
+					</ul>
+
+					<p class="fw-bold">COMPONENTS GENERALLY DESIGNED TO WEAR OUT AND BE REGULARLY REPLACED AFTER A PERIOD OF TIME,
+						OR ARE COVERED BY SAFETY FACTORY WARRANTIES:</p>
+					<ul>
+						<li>FRICTION MATERIALS, MANUAL TRANSMISSION CLUTCH ASSEMBLY/FRICTION CLUTCH, MANUAL CLUTCH DISC/PRESSURE,
+							PLATE AND THROW-OUT BEARING, FLY WHEELS AND FLEX PLATES, MANUAL AND HYDRAULIC LINKAGES</li>
+					</ul>
+
+					<p class="fw-bold">FOR FAILURES RELATED TO LACK OF LUBE OR LACK OF PROPER MAINTENANCE:</p>
+					<ul>
+						<li>BURNT VALVES, VALVE GRINDING</li>
+					</ul>
+
+					<p class="fw-bold">MISCELLANEOUS ITEMS</p>
+					<ul>
+						<li>CELLULAR PHONES, GAME CONSOLES, SPEAKERS, LCD SCREENS, SOFTWARE AND SOFTWARE UPGRADES</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade d-none" id="whatiscoveredchart" tabindex="-1" role="dialog"
+		aria-labelledby="whatiscoveredchart_title" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="modal-title" id="whatiscoveredchart_title">Coverage Chart</h3>
+				</div>
+				<div class="modal-body">
+					<table class="coveragechart">
+						<tr>
+							<td>Engine</td>
+							<td class="color-dtcgreen"><i class="fas fa-check-circle me-2"></i>COVERED</td>
+						</tr>
+						<tr>
+							<td>Transmission</td>
+							<td class="color-dtcgreen"><i class="fas fa-check-circle me-2"></i>COVERED</td>
+						</tr>
+						<tr>
+							<td>Drive Axle</td>
+							<td class="color-dtcgreen"><i class="fas fa-check-circle me-2"></i>COVERED</td>
+						</tr>
+						<tr>
+							<td>Transfer Case</td>
+							<td class="color-dtcgreen"><i class="fas fa-check-circle me-2"></i>COVERED</td>
+						</tr>
+						<tr>
+							<td>Starter</td>
+							<td class="color-dtcgreen"><i class="fas fa-check-circle me-2"></i>COVERED</td>
+						</tr>
+						<tr>
+							<td>Alternator</td>
+							<td class="color-dtcgreen"><i class="fas fa-check-circle me-2"></i>COVERED</td>
+						</tr>
+						<tr>
+							<td>Power Windows</td>
+							<td class="color-dtcgreen"><i class="fas fa-check-circle me-2"></i>COVERED</td>
+						</tr>
+						<tr>
+							<td>Water Pump</td>
+							<td class="color-dtcgreen"><i class="fas fa-check-circle me-2"></i>COVERED</td>
+						</tr>
+						<tr>
+							<td>Radiator</td>
+							<td class="color-dtcgreen"><i class="fas fa-check-circle me-2"></i>COVERED</td>
+						</tr>
+						<tr>
+							<td>Air Conditioner</td>
+							<td class="color-dtcgreen"><i class="fas fa-check-circle me-2"></i>COVERED</td>
+						</tr>
+						<tr>
+							<td>Fuel Delivery System</td>
+							<td class="color-dtcgreen"><i class="fas fa-check-circle me-2"></i>COVERED</td>
+						</tr>
+						<tr>
+							<td>Fuel Injector</td>
+							<td class="color-dtcgreen"><i class="fas fa-check-circle me-2"></i>COVERED</td>
+						</tr>
+						<tr>
+							<td>Fuel Pump</td>
+							<td class="color-dtcgreen"><i class="fas fa-check-circle me-2"></i>COVERED</td>
+						</tr>
+						<tr>
+							<td>Steering</td>
+							<td class="color-dtcgreen"><i class="fas fa-check-circle me-2"></i>COVERED</td>
+						</tr>
+						<tr>
+							<td>Suspension</td>
+							<td class="color-dtcgreen"><i class="fas fa-check-circle me-2"></i>COVERED</td>
+						</tr>
+						<tr>
+							<td>Brake System</td>
+							<td class="color-dtcgreen"><i class="fas fa-check-circle me-2"></i>COVERED</td>
+						</tr>
+						<tr>
+							<td>Electrical</td>
+							<td class="color-dtcgreen"><i class="fas fa-check-circle me-2"></i>COVERED</td>
+						</tr>
+						<tr>
+							<td>Electronics</td>
+							<td class="color-dtcgreen"><i class="fas fa-check-circle me-2"></i>COVERED</td>
+						</tr>
+						<tr>
+							<td>Wiring Harness</td>
+							<td class="color-dtcgreen"><i class="fas fa-check-circle me-2"></i>COVERED</td>
+						</tr>
+						<tr>
+							<td>Instrument Cluster</td>
+							<td class="color-dtcgreen"><i class="fas fa-check-circle me-2"></i>COVERED</td>
+						</tr>
+						<tr>
+							<td>Factory Audio</td>
+							<td class="color-dtcgreen"><i class="fas fa-check-circle me-2"></i>COVERED</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	@if (SelfServiceVSC.AppSettings.IsDevelopment)
+
+	{
+		<script src="~/lib/jquery/dist/jquery.js"></script>
+		<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+		<script src="~/lib/swiper/swiper-bundle.js"></script>
+		<script src="~/lib/glightbox/dist/js/glightbox.js"></script>
+		<script src="~/lib/inputmask/dist/jquery.inputmask.js"></script>
+		<script src="~/lib/lz-string/libs/lz-string.js"></script>
+		<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+		<script src="~/lib/jquery-validation/dist/additional-methods.js"></script>
+		<script src="~/js/site.js" asp-append-version="true"></script>
+		<script src="~/js/core.min.js" asp-append-version="true"></script>
+		<script src="~/js/script.js" asp-append-version="true"></script>
+	}
+
+
+
+	else
+
+	{
+		<script src="js/core.min.js" asp-append-version="true"></script>
+		<script src="~/js/site.min.js" asp-append-version="true"></script>
+	}
+	@await RenderSectionAsync("Scripts", required: false)
+
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-KN8X85TMB3"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag() { dataLayer.push(arguments); }
+		gtag('js', new Date());
+
+		gtag('config', 'G-KN8X85TMB3');
+	</script>
+</body>
+
+</html>

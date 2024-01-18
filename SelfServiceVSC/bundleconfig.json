@@ -1,0 +1,35 @@
+[
+	{
+		"outputFileName": "wwwroot/css/site.min.css",
+		"inputFiles": [
+			"node_modules/bootstrap/dist/css/bootstrap.css",
+			"node_modules/swiper/swiper-bundle.css",
+			"node_modules/glightbox/dist/css/glightbox.css",
+			"node_modules/fontawesome-free/css/all.css",
+			"wwwroot/css/site.css"
+		]
+	},
+	{
+		"outputFileName": "wwwroot/js/site.min.js",
+		"inputFiles": [
+			"node_modules/jquery/dist/jquery.js",
+			"node_modules/bootstrap/dist/js/bootstrap.bundle.js",
+			"node_modules/swiper/swiper-bundle.js",
+			"node_modules/glightbox/dist/js/glightbox.js",
+			"node_modules/inputmask/dist/jquery.inputmask.js",
+			"node_modules/lz-string/libs/lz-string.js",
+			"node_modules/jquery-validation/dist/jquery.validate.js",
+			"node_modules/jquery-validation/dist/additional-methods.js",
+			"wwwroot/js/site.js"
+		]
+	},
+	{
+		"outputFileName": "copyonly.js",
+		"inputFiles": [
+			"node_modules/fontawesome-free/webfonts/*",
+			"node_modules/chart.js/dist/chart.min.js",
+			"node_modules/bootstrap/dist/js/bootstrap.bundle.js.map",
+			"wwwroot/js/core.min.js"
+		]
+	}
+]

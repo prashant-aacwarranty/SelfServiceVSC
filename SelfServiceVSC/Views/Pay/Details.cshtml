@@ -1,0 +1,510 @@
+@using AAC.SelfServiceVSC
+@using AAC.SelfServiceVSC.Models
+@{
+	ViewData["Title"] = "Payment Details";
+}
+<div id="alert_success" style="display: none" class="alert alert-success" role="alert"></div>
+<form id="payment_form" name="payment_form" method="post" action="">
+	<div class="row">
+		<div class="col-12" id="payment_plan_details">
+            <div class="container row mt-3">
+                <div class="card-header">
+                    <h6 class="text-center">Pay By Credit Card</h6>
+                </div>
+            </div>
+			<div class="container row mt-3">
+				<div class="col-12">
+					<label id="cost_after_discount">Cost(after 10% discount) $</label>
+				</div>
+				<div class="col-md-6">
+					<div class="card transparent">
+						<div class="card-header">
+							<h4 class="text-center">Payment Details (Down Payment)</h4>
+						</div>
+						<div class="card-body">
+							<div class="accordion">
+								<div class="accordion-item">
+									<h4 class="accordion-header text-center">
+										<button class="accordion-button" type="button" data-bs-toggle="collapse"
+											data-bs-target="#payment_card" aria-expanded="true" aria-controls="payment_card">
+											Credit Card
+										</button>
+									</h4>
+									<div id="payment_card" class="accordion-collapse collapse show mt-0">
+										<div class="accordion-body">
+											<div class="row mt-1">
+												<div class="col-md-6">
+													<label for="form_downpayment_payment_card_name">Name on Card</label>
+													<input type="text" name="DownpaymentPaymentCardName" id="form_downpayment_payment_card_name"
+                                                           class="form-control" value="" required placeholder="Name" />
+												</div>
+												<div class="form-group col-md-6">
+													<label for="form_downpayment_payment_card_number">Card Number</label>
+													<input type="text" name="DownpaymentPaymentCardNumber"
+														id="form_downpayment_payment_card_number" class="form-control" value=""
+														placeholder="####-####-####-####" data-inputmask="'mask': '9999-9999-9999-9999'"
+                                                        inputmode="numeric" required />
+												</div>
+											</div>
+											<div class="row mt-1">
+                                                <div class="col-md-6">
+                                                    <label for="form_payment_card_cvv">CVV</label>
+                                                    <input type="text" name="payment_card_cvv" id="form_payment_card_cvv" class="form-control"
+                                                           value="" placeholder="CVV" maxlength="3" inputmode="numeric" required />
+                                                </div>
+												<div class="form-group col-md-6">
+													<label for="form_downpayment_payment_card_expiration">Expiration Date</label>
+													<input type="text" name="DownpaymentPaymentCardExpiration"
+														id="form_downpayment_payment_card_expiration" class="form-control" value=""
+                                                           data-inputmask="'regex': '\\d{1,2}/\\d{2}'" inputmode="numeric" required />
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="accordion-item mt-1">
+									<h4 class="accordion-header text-center">
+										<button class="accordion-button" type="button" data-bs-toggle="collapse"
+											data-bs-target="#bank_account" aria-expanded="true" aria-controls="bank_account">
+											Bank Account (ACH)
+										</button>
+									</h4>
+									<div id="bank_account" class="accordion-collapse collapse mt-0">
+										<div class="accordion-body">
+											<div class="row mt-1">
+												<div class="col-md-6">
+													<label for="form_downpayment_bank_transfer_name">Bank Name</label>
+													<input type="text" name="DownpaymentBankTransferName" id="form_downpayment_bank_transfer_name"
+                                                           class="form-control" value="" placeholder="Name" />
+												</div>
+												<div class="col-md-6">
+													<label for="form_downpayment_bank_transfer_account_type">Account Type</label>
+													<select name="DownpaymentBankTransferAccountType"
+														id="form_downpayment_bank_transfer_account_type" class="form-control">
+														<option selected value="CHECKING">Checking</option>
+														<option selected value="SAVINGS">Savings</option>
+													</select>
+												</div>
+											</div>
+											<div class="row mt-1">
+												<div class="col-md-6">
+													<label for="form_downpayment_bank_transfer_routing_number">Routing Number</label>
+													<input type="text" name="DownpaymentBankTransferRoutingNumber"
+														id="form_downpayment_bank_transfer_routing_number" class="form-control" value=""
+                                                           placeholder="" inputmode="numeric" />
+												</div>
+												<div class="col-md-6">
+													<label for="form_downpayment_bank_transfer_account_number">Account Number</label>
+													<input type="text" name="DownpaymentBankTransferAccountNumber"
+														id="form_downpayment_bank_transfer_account_number" class="form-control" value=""
+                                                           placeholder="" inputmode="numeric" />
+												</div>
+											</div>
+											<div class="row mt-1">
+												<div class="col-md-6">
+													<label for="form_downpayment_bank_transfer_routing_number_confirmation">Routing Number
+														(Confirm)</label>
+													<input type="text" name="DownpaymentBankTransferRoutingNumberConfirmation"
+														id="form_downpayment_bank_transfer_routing_number_confirmation" class="form-control"
+                                                           value="" inputmode="numeric" />
+												</div>
+												<div class="col-md-6">
+													<label for="form_downpayment_bank_transfer_account_number_confirmation">Account Number
+														(Confirm)</label>
+													<input type="text" name="DownpaymentBankTransferAccountNumberConfirmation"
+														id="form_downpayment_bank_transfer_account_number_confirmation" class="form-control"
+                                                           value="" inputmode="numeric" />
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="container row mt-3">
+		<p class="text-center">You can always call us at <a href="tel:@SelfServiceVSC.AppSettings.PhoneNumberMain"><i
+					class="fas fa-phone-alt small m-1"></i>@SelfServiceVSC.AppSettings.PhoneNumberMain.FormatPhone()</a> and we
+			can complete this process on the phone.</p>
+	</div>
+</form>
+
+<hr />
+
+<div class="text-center mt-3">
+	<button type="submit" class="btn btn-success rounded-pill p-4 pt-2 pb-2" id="finalize_payment">
+		Purchase
+	</button>
+</div>
+<div id='product-component-1702473815866'></div>
+@section Scripts
+	{
+	<style type="text/css">
+		body {
+			background-image: linear-gradient(white 20%, transparent 30%, transparent 70%, white 80%), url('/img/bg/bg04.jpg');
+		}
+	</style>
+    <script src="https://api.demo.convergepay.com/hosted-payments/Checkout.js"></script>
+	<script type="text/javascript">
+		let selectedEstimate;
+
+        $(function () {
+            $(":input").inputmask();
+
+            function updateTerms() {
+                let downpayment = (selectedEstimate.retailRate * $("#form_downpayment").val()).toFixed(0);
+                let financed = selectedEstimate.retailRate - downpayment;
+                $(".downpaymentAmount").text(downpayment);
+                $(".financedAmount").text(selectedEstimate.retailRate - downpayment);
+                $(".monthlyPayment").text((financed / $("#form_term").val()).toFixed(2));
+            }
+
+            function prerequisite(item, prerequisite_field, target) {
+                return prerequisite_field.is(":checked") === target;
+            }
+
+            function prerequisiteOption(item, prerequisite_field, target, other_option) {
+                if (isNull(prerequisite_field) || prerequisite_field.length() === 0 || prerequisite_field.is(":checked") === target) {
+                    return other_option.val().trim() === "";
+                }
+                else {
+                    return true;
+                }
+            }
+
+            $("#payment_form").validate({
+                rules: {
+                    downpayment: "required",
+                    term: "required",
+                    billing_fname: {
+                        required: function (item) { return prerequisite(item, $("#form_billing_same"), false); }
+                    },
+                    billing_lname: {
+                        required: function (item) { return prerequisite(item, $("#form_billing_same"), false); }
+                    },
+                    billing_address1: {
+                        required: function (item) { return prerequisite(item, $("#form_billing_same"), false); }
+                    },
+                    billing_city: {
+                        required: function (item) { return prerequisite(item, $("#form_billing_same"), false); }
+                    },
+                    billing_state: {
+                        required: function (item) { return prerequisite(item, $("#form_billing_same"), false); }
+                    },
+                    billing_zip: {
+                        required: function (item) { return prerequisite(item, $("#form_billing_same"), false); },
+                        minlength: 5,
+                        maxlength: 5
+                    },
+                    downpayment_payment_card_name: {
+                        required: function (item) { return prerequisiteOption(item, null, false, $("#form_downpayment_bank_transfer_account_number")); }
+                    },
+                    downpayment_payment_card_number: {
+                        required: function (item) { return prerequisiteOption(item, null, false, $("#form_downpayment_bank_transfer_account_number")); },
+                        minlength: 16,
+                        maxlength: 16
+                    },
+                    downpayment_payment_card_expiration: {
+                        required: function (item) { return prerequisiteOption(item, null, false, $("#form_downpayment_bank_transfer_account_number")); }
+                    },
+                    downpayment_bank_transfer_name: {
+                        required: function (item) { return prerequisiteOption(item, null, false, $("#form_downpayment_payment_card_number")); }
+                    },
+                    downpayment_bank_transfer_account_type: {
+                        required: function (item) { return prerequisiteOption(item, null, false, $("#form_downpayment_payment_card_number")); }
+                    },
+                    downpayment_bank_transfer_routing_number: {
+                        required: function (item) { return prerequisiteOption(item, null, false, $("#form_downpayment_payment_card_number")); }
+                    },
+                    downpayment_bank_transfer_account_number: {
+                        required: function (item) { return prerequisiteOption(item, null, false, $("#form_downpayment_payment_card_number")); }
+                    },
+                    downpayment_bank_transfer_routing_number_confirmation: {
+                        required: function (item) { return prerequisiteOption(item, null, false, $("#form_downpayment_payment_card_number")); }
+                    },
+                    downpayment_bank_transfer_account_number_confirmation: {
+                        required: function (item) { return prerequisiteOption(item, null, false, $("#form_downpayment_payment_card_number")); }
+                    },
+                    monthly_payment_card_name: {
+                        required: function (item) { return prerequisiteOption(item, $("#form_monthly_same"), false, $("#form_monthly_bank_transfer_account_number")); }
+                    },
+                    monthly_payment_card_number: {
+                        required: function (item) { return prerequisiteOption(item, $("#form_monthly_same"), false, $("#form_monthly_bank_transfer_account_number")); },
+                        minlength: 16,
+                        maxlength: 16
+                    },
+                    monthly_payment_card_expiration: {
+                        required: function (item) { return prerequisiteOption(item, $("#form_monthly_same"), false, $("#form_monthly_bank_transfer_account_number")); }
+                    },
+                    monthly_bank_transfer_name: {
+                        required: function (item) { return prerequisiteOption(item, $("#form_monthly_same"), false, $("#form_monthly_payment_card_number")); }
+                    },
+                    monthly_bank_transfer_account_type: {
+                        required: function (item) { return prerequisiteOption(item, $("#form_monthly_same"), false, $("#form_monthly_payment_card_number")); }
+                    },
+                    monthly_bank_transfer_routing_number: {
+                        required: function (item) { return prerequisiteOption(item, $("#form_monthly_same"), false, $("#form_monthly_payment_card_number")); }
+                    },
+                    monthly_bank_transfer_account_number: {
+                        required: function (item) { return prerequisiteOption(item, $("#form_monthly_same"), false, $("#form_monthly_payment_card_number")); }
+                    },
+                    monthly_bank_transfer_routing_number_confirmation: {
+                        required: function (item) { return prerequisiteOption(item, $("#form_monthly_same"), false, $("#form_monthly_payment_card_number")); }
+                    },
+                    monthly_bank_transfer_account_number_confirmation: {
+                        required: function (item) { return prerequisiteOption(item, $("#form_monthly_same"), false, $("#form_monthly_payment_card_number")); }
+                    },
+                    odometer_image: "required",
+                    digitally_signed: "required",
+
+                },
+                messages: {
+                    downpayment: "A downpayment of at least 5% is required.",
+                    term: "Please choose a payback term option.",
+                    billing_fname: "First name is required.",
+                    billing_lname: "Last name is required.",
+                    billing_address1: "Street address is required.",
+                    billing_city: "City is required.",
+                    billing_state: "State is required.",
+                    billing_zip: "ZIP code is required.",
+                    downpayment_payment_card_name: "Cardholder name is required.",
+                    downpayment_payment_card_number: "Card number is required.",
+                    downpayment_payment_card_expiration: "Card expiration date is required.",
+                    downpayment_bank_transfer_name: "Bank name is required.",
+                    downpayment_bank_transfer_account_type: "Account type is required.",
+                    downpayment_bank_transfer_routing_number: "Routing number is required.",
+                    downpayment_bank_transfer_account_number: "Account number is required.",
+                    downpayment_bank_transfer_routing_number_confirmation: "Routing number must match.",
+                    downpayment_bank_transfer_account_number_confirmation: "Account number must match.",
+                    monthly_payment_card_name: "Cardholder name is required.",
+                    monthly_payment_card_number: "Card number is required.",
+                    monthly_payment_card_expiration: "Card expiration date is required.",
+                    monthly_bank_transfer_name: "Bank name is required.",
+                    monthly_bank_transfer_account_type: "Account type is required.",
+                    monthly_bank_transfer_routing_number: "Routing number is required.",
+                    monthly_bank_transfer_account_number: "Account number is required.",
+                    monthly_bank_transfer_routing_number_confirmation: "Routing number must match.",
+                    monthly_bank_transfer_account_number_confirmation: "Account number must match.",
+                    odometer_image: "A photo of your odometer reading is required.",
+                    digitally_signed: "This form must be digitally signed to proceed with the contracts."
+
+                }
+            });
+
+            $("#form_term,#form_downpayment").on("change keyup", (event) => { updateTerms(); });
+
+            $("#form_same_monthly").on(
+                "change keyup",
+                (event) => {
+                    let checked = $("#form_same_monthly").is(":checked");
+                    $("[id^=form_monthly_]").prop("disabled", checked).prop("readonly", checked);
+                    if (checked) {
+                        $("#monthly_payment_details").slideUp("slow");
+                    }
+                    else {
+                        $("#monthly_payment_details").slideDown("slow");
+                    }
+                });
+            $("#form_same_billing").on(
+                "change keyup",
+                (event) => {
+                    let checked = $("#form_same_billing").is(":checked");
+                    $("[id^=form_billing_]").prop("disabled", checked).prop("readonly", checked);
+                    if (checked) {
+                        $("#billing").slideUp("slow");
+                    }
+                    else {
+                        $("#billing").slideDown("slow");
+                    }
+                });
+
+            $("[id^=form_monthly_],[id^=form_billing_]").prop("disabled", true).prop("readonly", true);
+
+            $("#payment_plan,#toggle_payment,#pay_in_full").on(
+                "click select",
+                (event) => {
+                    preventEvent(event);
+
+                    let target = $(event.target).closest("[id]").attr("id");
+                    let isGreen = $("#toggle_payment").hasClass("btn-green");
+
+                    if (isGreen || target === "payment_plan") {
+                        $("#toggle_payment").removeClass("btn-green").addClass("btn-blue");
+                        $("#payment_plan_details").show("slide", { direction: "right" }, 1000);
+                        $("#pay_in_full_details").hide("slide", { direction: "right" }, 1000);
+                    }
+                    else {
+                        $("#toggle_payment").removeClass("btn-blue").addClass("btn-green");
+                        $("#payment_plan_details").hide("slide", { direction: "left" }, 1000);
+                        $("#pay_in_full_details").show("slide", { direction: "left" }, 1000);
+                    }
+                });
+
+            // unclear what this was doing, but it was commented out and doesn't seem to work
+
+            $.ajax({
+                type: "get",
+                url: "/RetrieveEstimate",
+                data: JSON.stringify(""),
+                success: function (data) {
+                    data.forEach((estimate) => {
+                        if (estimate.selected === true) {
+                            setEstimationCost(estimate);
+                            console.log(estimate)
+                            selectedEstimate = estimate;
+                            $("form_term").empty();
+                            let terms = [24, 21, 18, 12, 6].filter((item) => { return item <= selectedEstimate.term - 12; });
+                            terms.forEach((item) => { $("#form_term").append("<option value=\"" + item + "\">" + item + " Months</option>"); });
+                            $("#form_term").val(Math.max.apply(null, terms))
+                            let downpayments = [.05, .1, .15, .2, .25];
+                            downpayments.forEach((item) => {
+                                $("#form_downpayment").append("<option value=\"" + item + "\">" + formatPercent(item) + "</option>");
+                            });
+
+                            $("#form_downpayment").val(Math.min.apply(null, downpayments));
+
+                            updateTerms();
+                        }
+                    });
+                },
+                contentType: "application/json"
+            });
+
+            function setEstimationCost(estimate) {
+                // Get the original cost value from the label
+
+                var originalCost = estimate.retailRate
+
+                // Calculate the discounted cost (90% of the original cost)
+                var discountedCost = originalCost * 0.9;
+
+                // Set the value in the "cost_after_discount" label
+                var costAfterDiscountLabel = document.getElementById("cost_after_discount");
+                costAfterDiscountLabel.innerText = "Cost (after 10% discount) $" + discountedCost.toFixed(2);
+            }
+            $("#download_contract").on(
+                "click select",
+                (event) => {
+                    preventEvent(event);
+                    window.open("/contract-preview", "_blank");
+                });
+
+            function pay(data) {
+                
+                // var token = sessionStorage.getItem('token');
+                var card = document.getElementById("form_downpayment_payment_card_number").value;
+                var exp = document.getElementById('form_downpayment_payment_card_expiration').value;
+                var cvv = document.getElementById('form_payment_card_cvv').value;
+                var gettoken = "Y";
+                var addtoken = "Y";
+                var firstname = data.quoteRequest.fname;
+                var lastname = data.quoteRequest.lname;
+                var merchanttxnid = 12310;
+
+                var paymentData = {
+                    ssl_txn_auth_token: data.token,
+                    ssl_card_number: card,
+                    ssl_exp_date: exp,
+                    ssl_get_token: gettoken,
+                    ssl_add_token: addtoken,
+                    ssl_first_name: firstname,
+                    ssl_last_name: lastname,
+                    ssl_cvv2cvc2: cvv,
+                    ssl_merchant_txn_id: merchanttxnid
+                };
+
+                var callback = {
+                    onError: function (error) {
+                        //showResult("error", error);
+                    },
+                    onDeclined: function (response) {
+                        console.log("Result Message=" + response['ssl_result_message']);
+                        //showResult("declined", JSON.stringify(response));
+                    },
+                    onApproval: function (response) {
+                        console.log("Approval Code=" + response['ssl_approval_code']);
+                        if (response.ssl_token_response == "SUCCESS") {
+                            var alertDiv = document.getElementById("alert_success");
+                            alertDiv.innerText = "Payment Sunncessfully Done!";
+                            alertDiv.style.display = "block";
+                        }
+                        console.log(response)
+                        finalizeContract();
+                        //showResult("approval", JSON.stringify(response));
+                    }
+                };
+                ConvergeEmbeddedPayment.pay(paymentData, callback);
+            }
+
+            $("#finalize_payment").on("click select", (event) => {
+                preventEvent(event);
+                // Remove non-numeric characters from the card number
+                var cardNumber = $("#form_downpayment_payment_card_number").val().replace(/[^0-9]/g, '');
+                let form = $("#payment_form");
+
+                if (form.valid()) {
+                    if (confirm("This action will electronically sign the contract and schedule the first payment for 30 days from today. Proceed?")) {
+                        var requestData = {
+                            FirstName: document.getElementById("form_downpayment_payment_card_name").value,
+                            LastName: document.getElementById("form_downpayment_payment_card_name").value
+                        };
+                        
+                        $.ajax({
+                            url: "/GetToken",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(requestData),
+                            success: function (data) {
+                                if (data === false) {
+                                    // Something has gone wrong, handle this visually
+                                } else {
+                                    // Save documents locally, display loan/contract IDs, print
+                                    pay(data);
+                                }
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+
+                                console.error("Error:", errorThrown);
+                            }
+                        });
+                    }
+                }
+            });
+
+            function finalizeContract() {
+                // Remove non-numeric characters from the card number
+                var cardNumber = $("#form_downpayment_payment_card_number").val().replace(/[^0-9]/g, '');
+                let form = $("#payment_form");
+
+                formSubmit({
+                    form: form,
+                    formType: "",
+                    url: "/finalize",
+                    success: function (data) {
+                        try {
+                            // Parse the response if it's JSON
+                            var responseData = JSON.parse(data);
+
+                            // Your logic here based on the responseData
+                            if (responseData === false) {
+                                // Something has gone wrong, handle visually
+                            } else {
+                                // Save documents locally, display loan/contract IDs, print
+                            }
+                        } catch (error) {
+                            console.error("Error parsing JSON response:", error);
+                            // Handle the error appropriately
+                        }
+                    }
+                });
+            }
+
+		});
+        
+	</script>
+}

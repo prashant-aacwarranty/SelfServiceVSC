@@ -1,0 +1,44 @@
+@* todo: show term and big ol amounts and stuff *@
+
+<form method="POST" action="/single-pay">
+	@Html.AntiForgeryToken();
+</form>
+
+<div class="col-12 d-none" id="pay_in_full_details">
+	<div class="container row mt-3">
+		<div class="col-md-6">
+			<div class="card transparent">
+				<div class="card-header">
+					<h4 class="text-center">Payment Details</h4>
+				</div>
+				<div class="row mt-1">
+					<div class="col-md-6">
+						<label for="form_payment_card_name">Name on Card</label>
+						<input type="text" name="PaymentCardName" id="form_payment_card_name" class="form-control" value=""
+							placeholder="Name" />
+					</div>
+					<div class="form-group col-md-6">
+						<label for="form_payment_card_number">Card Number</label>
+						<input type="text" name="PaymentCardNumber" id="form_payment_card_number" class="form-control" value=""
+							placeholder="####-####-####-####" data-inputmask="'mask': '9999-9999-9999-9999'"
+							inputmode="numeric" />
+					</div>
+				</div>
+				<div class="row mt-1">
+					<div class="form-group col-md-6">
+						<label for="card_exp">Expiration Date</label>
+						<input type="text" name="PaymentCardExpiration" id="card_exp" class="form-control"
+							value="" data-inputmask="99-99" inputmode="numeric" />
+					</div>
+				</div>
+				<div class="row mt-1">
+					<div class="form-group col-md-6">
+						<label for="card_exp">Security Code</label>
+						<input type="text" maxlength="3" name="cvv" id="card_cvv" class="form-control"
+							value="" data-inputmask="999'" inputmode="numeric" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
