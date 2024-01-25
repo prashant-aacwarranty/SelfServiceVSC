@@ -14,12 +14,12 @@
             </div>
 			<div class="container row mt-3">
 				<div class="col-12">
-					<label id="cost_after_discount">Cost(after 10% discount) $</label>
+                    <label id="cost_after_discount" style="font-size:x-large;font-weight:bold">Cost(after 10% discount) $</label>
 				</div>
 				<div class="col-md-6">
 					<div class="card transparent">
 						<div class="card-header">
-							<h4 class="text-center">Payment Details (Down Payment)</h4>
+							<h4 class="text-center">Payment Details</h4>
 						</div>
 						<div class="card-body">
 							<div class="accordion">
@@ -27,7 +27,7 @@
 									<h4 class="accordion-header text-center">
 										<button class="accordion-button" type="button" data-bs-toggle="collapse"
 											data-bs-target="#payment_card" aria-expanded="true" aria-controls="payment_card">
-											Credit Card
+											Pay by Credit Card
 										</button>
 									</h4>
 									<div id="payment_card" class="accordion-collapse collapse show mt-0">
@@ -49,7 +49,7 @@
 											<div class="row mt-1">
                                                 <div class="col-md-6">
                                                     <label for="form_payment_card_cvv">CVV</label>
-                                                    <input type="text" name="payment_card_cvv" id="form_payment_card_cvv" class="form-control"
+                                                    <input type="password" name="payment_card_cvv" id="form_payment_card_cvv" class="form-control"
                                                            value="" placeholder="CVV" maxlength="3" inputmode="numeric" required />
                                                 </div>
 												<div class="form-group col-md-6">
@@ -66,7 +66,7 @@
 									<h4 class="accordion-header text-center">
 										<button class="accordion-button" type="button" data-bs-toggle="collapse"
 											data-bs-target="#bank_account" aria-expanded="true" aria-controls="bank_account">
-											Bank Account (ACH)
+											Pay by Bank Account (ACH)
 										</button>
 									</h4>
 									<div id="bank_account" class="accordion-collapse collapse mt-0">
@@ -430,11 +430,19 @@
                         console.log("Approval Code=" + response['ssl_approval_code']);
                         if (response.ssl_token_response == "SUCCESS") {
                             var alertDiv = document.getElementById("alert_success");
-                            alertDiv.innerText = "Payment Sunncessfully Done!";
+                            alertDiv.innerText = "Payment Successfully Done!";
                             alertDiv.style.display = "block";
+                            finalizeContract();
+
+                            // setTimeout(function () {
+                            //     window.location = "/payment-process-credit";
+                            // }, 5000);
+                           
                         }
                         console.log(response)
-                        finalizeContract();
+                        
+
+
                         //showResult("approval", JSON.stringify(response));
                     }
                 };
@@ -480,27 +488,26 @@
                 // Remove non-numeric characters from the card number
                 var cardNumber = $("#form_downpayment_payment_card_number").val().replace(/[^0-9]/g, '');
                 let form = $("#payment_form");
-
+                debugger
                 formSubmit({
                     form: form,
                     formType: "",
                     url: "/finalize",
-                    success: function (data) {
-                        try {
-                            // Parse the response if it's JSON
-                            var responseData = JSON.parse(data);
-
-                            // Your logic here based on the responseData
-                            if (responseData === false) {
-                                // Something has gone wrong, handle visually
-                            } else {
-                                // Save documents locally, display loan/contract IDs, print
-                            }
-                        } catch (error) {
-                            console.error("Error parsing JSON response:", error);
-                            // Handle the error appropriately
+                    successFunction: function (data) {
+                        var responseData = JSON.parse(data);
+                        if (responseData === false) {
+                            console.error("API call failed.");
+                        } else {
+                            console.log("API call successful:", responseData);
+                            window.location = "/payment-process-credit";    
                         }
+                    },
+                    error: function (xhr, status, error) {
+                        debugger
+                        // Handle AJAX request errors here
+                        console.error("AJAX request failed:", status, error);
                     }
+                    
                 });
             }
 

@@ -46,9 +46,14 @@
 					</div>
 					<div class="card-body">
 						<p class="form-section">Fill in some information about your vehicle to see available coverage plans!</p>
-						<div class="form-group">
+                        <div class="form-group">
+                            <label for="form_vin">VIN</label>
+                            <input type="text" name="vin" id="form_vin" class="form-control" value=""
+                                   onblur="callVinDecoder()" placeholder="Type your vehicle's full VIN" />
+                        </div>
+                        <div class="form-group">
 							<label for="form_year">Year</label>
-							<select name="year" id="form_year" class="form-control">
+                            <select name="year" id="form_year" class="form-control" disabled readonly>
 								<option selected value="">Select</option>
 								@{
 									for (Int32 i = -1; i < 5; i++)
@@ -62,7 +67,7 @@
 						</div>
 						<div class="form-group">
 							<label for="form_make">Make</label>
-							<select name="make" id="form_make" class="form-control">
+                            <select name="make" id="form_make" class="form-control" disabled readonly>
 								<option selected value="">Select</option>
 							</select>
 						</div>
@@ -72,17 +77,12 @@
 								<option selected value="">Choose a Make</option>
 							</select>
 						</div>
-						<div class="form-group">
-							<label for="form_mileage">Mileage</label>
-							<input type="text" name="mileage" id="form_mileage" class="form-control" value=""
-								placeholder="Estimated Mileage" data-inputmask="'regex': '\\d{1,6}'" inputmode="numeric" />
-						</div>
 						<hr />
-						<div class="form-group">
-							<label for="form_vin">VIN</label>
-							<input type="text" name="vin" id="form_vin" class="form-control" value=""
-								placeholder="Type your vehicle's full VIN" />
-						</div>
+                        <div class="form-group">
+                            <label for="form_mileage">Mileage</label>
+                            <input type="text" name="mileage" id="form_mileage" class="form-control" value=""
+                                   placeholder="Estimated Mileage" data-inputmask="'regex': '\\d{1,6}'" inputmode="numeric" />
+                        </div>
 						<br />
 						<hr />
 						<div class="text-center">
@@ -186,5 +186,44 @@
 					$("#estimate_form").submit();
 				});
 		});
+
+        function callVinDecoder() {
+            // Get the entered VIN
+            var vin = document.getElementById('form_vin').value;
+            $.ajax({
+                url: "/VINdecoder",
+                type: 'GET',
+                data: { vin: vin },
+                success: function (data) {
+                    // Handle the VIN decoder API response data
+                    var yearDropdown = $('#form_year');
+                    var makeDropdown = $('#form_make');
+                    var modelDropdown = $('#form_model');
+
+                    // Update Year dropdown
+                    if (data.year) {
+                        yearDropdown.val(data.year);
+                    }
+
+                    // Update Make dropdown
+                    if (data.make) {
+                        makeDropdown.empty();
+                        makeDropdown.append('<option selected value="">' + data.make + '</option>');
+                    }
+
+                    // Update Model dropdown
+                    if (data.model) {
+                        modelDropdown.empty();
+                        modelDropdown.append('<option selected value="">' + data.model + '</option>');
+                    }
+                },
+                error: function (error) {
+                    // Handle errors
+                    console.error('There was a problem with the AJAX operation:', error);
+                    $('#vinDecoderResponse').html('Error: ' + error.statusText);
+                    $('#vinDecoderResponse').html('VIN Decoder Response: ' + JSON.stringify(data));
+                }
+            });
+        }
 	</script>
 }

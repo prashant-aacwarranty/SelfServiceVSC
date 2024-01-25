@@ -56,5 +56,11 @@ namespace SelfServiceVSC.Controllers
 			this.HttpContext.Session.SetSessionDetails(sessionDetails);
 			return Json(sessionDetails.SelectedSessionEstimate);
 		}
+		[HttpGet("/payment-process-credit")]
+		public IActionResult Processcredit()
+		{
+			return View();
+		}
+
 	}
 }

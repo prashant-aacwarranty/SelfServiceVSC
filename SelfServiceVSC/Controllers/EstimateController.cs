@@ -6,6 +6,7 @@ using AAC.SelfServiceVSC.Models.Form;
 using AAC.Libraries;
 using Elavon_Converge.Models;
 using Microsoft.Extensions.FileProviders;
+using System.Text.Json;
 
 namespace SelfServiceVSC.Controllers
 {
@@ -203,7 +204,7 @@ namespace SelfServiceVSC.Controllers
 
 		[HttpPost("/finalize")]
 		public async Task<JsonResult> FinalizeContract(FinalizeContractRequest finalizeContract)
-		{
+		 {
 			var sessionDetails = this.HttpContext.Session.GetSessionDetails();
 
 			sessionDetails.FinalizeContract = finalizeContract;
@@ -259,22 +260,22 @@ namespace SelfServiceVSC.Controllers
 
 				var imageStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
 
-				//Mail.Send(
-				//	to: sessionDetails.QuoteRequest.Email,
-				//	toName: sessionDetails.QuoteRequest.FullName,
-				//	subject,
-				//	body,
-				//	attachmentStreams: new Stream[] { PDFStream },
-				//	attachmentNames: new String[] { scsContract.ContractNumber + ".pdf" }
-				//);
+				Mail.Send(
+					to: sessionDetails.QuoteRequest.Email,
+					toName: sessionDetails.QuoteRequest.FullName,
+					subject,
+					body,
+					attachmentStreams: new Stream[] { PDFStream },
+					attachmentNames: new String[] { scsContract.ContractNumber + ".pdf" }
+				);
 
-				//Mail.Send(
-				//	"programming@aacwarranty.com",
-				//	"AAC",
-				//	subject,
-				//	body,
-				//	new Stream[] { PDFStream, imageStream },
-				//	new String[] { scsContract.ContractNumber + ".pdf", sessionDetails.OdometerImage});
+				Mail.Send(
+					"programming@aacwarranty.com",
+					"AAC",
+					subject,
+					body,
+					new Stream[] { PDFStream, imageStream },
+					new String[] { scsContract.ContractNumber + ".pdf", sessionDetails.OdometerImage });
 
 				sessionDetails.Reset();
 
@@ -314,9 +315,11 @@ namespace SelfServiceVSC.Controllers
 		[HttpPost("/SaveFile")]
 		public IActionResult Index(IFormFile file)
 		{
-			if (file != null)
+			if (file == null)
 			{
-				if (file.Length > 0)
+				return Json(new { message = "Please upload a file first." });
+			}
+			if (file.Length > 0)
 				{
 					//Getting FileName
 					var fileName = Path.GetFileName(file.FileName);
@@ -342,9 +345,88 @@ namespace SelfServiceVSC.Controllers
 					var sessionDetails = this.HttpContext.Session.GetSessionDetails();
 					sessionDetails.OdometerImage = newFileName;
 					this.HttpContext.Session.SetSessionDetails(sessionDetails);
-				}
+				return Json(new { message = "Upload successful!" });
 			}
-			return Json(new { message = "Upload successful!" });
+			
+			 return Json(new { message = "File is empty." });
 		}
+
+
+		[HttpGet("/DownloadPDF")]
+		public IActionResult DownloadPdf()
+		{
+			var sessionDetails = this.HttpContext.Session.GetSessionDetails();
+			if (sessionDetails.GeneratedContract == null)
+			{
+				return NotFound("Contract not found");
+			}
+
+			// Get the PDF content from the session
+			var PDFBytes = Convert.FromBase64String(sessionDetails.GeneratedContract.ContractDocument);
+			var PDFStream = new MemoryStream(PDFBytes);
+
+			// Set the content type for the response
+			Response.Headers.Add("Content-Disposition", "inline; filename=Contract.pdf");
+			return File(PDFStream, "application/pdf");
+		}
+
+		[HttpGet("/VINdecoder")]
+		public async Task<IActionResult> Vindecoder(string vin)
+{
+			try
+				{
+				string apiKey = "YOUR_API_KEY";
+
+				// Example VIN for testing
+				string vinToDecode = vin;
+
+				// VPIC API endpoint for VIN decoding
+				string apiUrl = $"https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVin/{vinToDecode}?format=json&apiKey={apiKey}"; // Replace with the actual API URL
+
+				using (HttpClient client = new HttpClient())
+        {
+            // Add headers for authentication or content type if required
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer YOUR_API_KEY"); // Example if using an API key
+
+            HttpResponseMessage response = await client.GetAsync(apiUrl);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string jsonResponse = await response.Content.ReadAsStringAsync();
+						VehicleInfo vehicleInfo = JsonSerializer.Deserialize<VehicleInfo>(jsonResponse); ;
+
+						// Specify the desired VariableId
+						/*int desiredVariableId = 29;*/ // Change this to your desired VariableId
+						string VariableYear = "Model Year";
+						string VariableModel = "Model";
+						string VariableMake = "Make";
+						// Find the result with the specified VariableId
+						VehicleResult resultYear = vehicleInfo.Results.Find(r => r.Variable == VariableYear);
+						VehicleResult resultModel = vehicleInfo.Results.Find(r => r.Variable == VariableModel);
+						VehicleResult resultMake = vehicleInfo.Results.Find(r => r.Variable == VariableMake);
+
+
+						// Parse the JSON response and return the decoded VIN information
+						var Data = new
+						{
+							Year = resultYear.Value,
+							Make = resultMake.Value,
+							Model = resultModel.Value
+							
+						};
+
+						return Ok(Data); // Return the parsed data as the response
+            }
+            else
+            {
+                return StatusCode((int)response.StatusCode, response.ReasonPhrase); // Return the appropriate error status code
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, "Internal Server Error"); // Handle unexpected errors
+    }
+}
 	}
 }
