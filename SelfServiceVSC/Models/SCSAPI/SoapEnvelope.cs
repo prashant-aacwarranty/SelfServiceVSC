@@ -43,7 +43,8 @@ namespace AAC.SelfServiceVSC.Models.SCSAPI
 					return Body.GetRates?.SOAPAction ??
 						Body.GetTrimsByVIN?.SOAPAction ??
 						Body.GetLienholders?.SOAPAction ??
-						Body.GenerateContract?.SOAPAction;
+						Body.GenerateContract?.SOAPAction ??
+						Body.VoidContract?.SOAPAction;
 				}
 			}
 
@@ -55,7 +56,8 @@ namespace AAC.SelfServiceVSC.Models.SCSAPI
 					return Body.GetRates?.URL ??
 						Body.GetTrimsByVIN?.URL ??
 						Body.GetLienholders?.URL ??
-						Body.GenerateContract?.URL;
+						Body.GenerateContract?.URL ??
+						Body.VoidContract?.URL;
 				}
 			}
 		}
@@ -75,7 +77,7 @@ namespace AAC.SelfServiceVSC.Models.SCSAPI
 			[XmlElement(ElementName = "GenerateContract", Namespace = tc)]
 			public GenerateContractWrapper GenerateContract { get; set; } = null;
 
-			[XmlElement(ElementName = "VoidContract", Namespace = tc)]
+			[XmlElement(ElementName = "VoidContract", Namespace = ta)]
 			public VoidContractWrapper VoidContract { get; set; } = null;
 
 			[XmlElement(ElementName = "GetRatesResponse", Namespace = ta)]
@@ -84,7 +86,7 @@ namespace AAC.SelfServiceVSC.Models.SCSAPI
 			[XmlElement(ElementName = "GenerateContractResponse", Namespace = tc)]
 			public GenerateContractResponseWrapper GenerateContractResponse { get; set; } = null;
 
-			[XmlElement(ElementName = "VoidContractResponse", Namespace = tc)]
+			[XmlElement(ElementName = "VoidContractResponse", Namespace = ta)]
 			public VoidContractResponseWrapper VoidContractResponse { get; set; } = null;
 		}
 
@@ -188,10 +190,10 @@ namespace AAC.SelfServiceVSC.Models.SCSAPI
 			}
 		}
 
-		[XmlType(Namespace = tc)]
+		[XmlType(Namespace = ta)]
 		public class VoidContractWrapper
 		{
-			[XmlElement(ElementName = "VoidContract", Namespace = tc)]
+			[XmlElement(ElementName = "request", Namespace = ta)]
 			public VoidContract VoidContract { get; set; } = null;
 
 			[XmlIgnore]
@@ -199,16 +201,24 @@ namespace AAC.SelfServiceVSC.Models.SCSAPI
 			{
 				get
 				{
-					return "http://tempuri.org/ContractService/VoidContract";
+					//return "http://tempuri.org/ContractService/VoidContract";
+					return "http://www.natinc.com/SCSAutoService/VoidContract";
 				}
 			}
 
 			[XmlIgnore]
+			//public String URL
+			//{
+			//	get
+			//	{
+			//		return Envelope.URLContract;
+			//	}
+			//}
 			public String URL
 			{
 				get
 				{
-					return Envelope.URLContract;
+					return Envelope.URLAuto;
 				}
 			}
 		}
@@ -227,10 +237,10 @@ namespace AAC.SelfServiceVSC.Models.SCSAPI
 			public GenerateContractResponse GenerateContractResponse { get; set; } = null;
 		}
 
-		[XmlType(Namespace = tc)]
+		[XmlType(Namespace = ta)]
 		public class VoidContractResponseWrapper
 		{
-			[XmlElement(ElementName = "ContractVoid")]
+			[XmlElement(ElementName = "VoidContractResult")]
 			public VoidContractResponse VoidContractResponse { get; set; } = null;
 		}
 	}

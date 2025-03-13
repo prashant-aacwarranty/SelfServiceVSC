@@ -1,32 +1,39 @@
 @using AAC.SelfServiceVSC
 @using AAC.SelfServiceVSC.Models
 @{
-    ViewData["Title"] = "Payment Details";
+    ViewData["Title"] = "Payment Plans";
 }
 <form id="payment_form" name="payment_form" method="post" action="">
     <div class="row">
         <div class="col-12" id="payment_plan">
             <div class="container row mt-3">
                 <div class="card-header">
-                    <h4 class="text-center">Payment Plan</h4>
+                    <h4 class="text-center">Payment Plan Terms</h4>
                 </div>
             </div>
             <div class="container row mt-5">
                 <div class="col-md-12">
                     <div class="card transparent">
-                        <div class="card-header">
+                        @* <div class="card-header">
                             <h4 class="text-center">Loan Terms</h4>
-                        </div>
+                        </div> *@
                         <div class="card-body">
                             <div class="row">
+                                @* <div class="form-group col-md-6">
+                                <label for="form_lname">Down Payment</label>
+                                <select name="Downpayment" id="form_downpayment" class="form-control">
+                                </select>
+                                </div> *@
                                 <div class="form-group col-md-6">
                                     <label for="form_lname">Down Payment</label>
-                                    <select name="Downpayment" id="form_downpayment" class="form-control">
-                                        @* f: what goes in here? *@
-                                    </select>
+                                    <div class="dropdown-with-arrow">
+                                        <select name="Downpayment" id="form_downpayment" class="form-control">
+                                        </select>
+                                        <div class="dropdown-arrow"></div>
+                                    </div>
                                 </div>
                                 <div class="col-md-3">
-                                    Downpayment Amount
+                                    Down Payment Amount
                                     <br />
                                     $ <span class="downpaymentAmount"></span>
                                 </div>
@@ -36,12 +43,23 @@
                                     $ <span class="financedAmount"></span>
                                 </div>
                             </div>
-                            <div class="row mt-1">
+                            @*  <div class="row mt-1">
+                            <div class="form-group col-md-6">
+                            <label for="form_term">Term (Months)</label>
+                            <select name="Term" id="form_term" class="form-control">
+                            </select>
+                            </div>
+                            </div> *@
+                            <div class="row">
                                 <div class="form-group col-md-6">
                                     <label for="form_term">Term (Months)</label>
-                                    <select name="Term" id="form_term" class="form-control">
-                                    </select>
+                                    <div class="dropdown-with-arrow">
+                                        <select name="Term" id="form_term" class="form-control">
+                                        </select>
+                                        <div class="dropdown-arrow"></div>
+                                    </div>
                                 </div>
+
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
@@ -59,19 +77,31 @@
             <div class="container row mt-3">
                 <div class="col-md-6">
                     <div class="card transparent">
+                        <div class="col-12" style="display: none;">
+                            <input type="checkbox" name="SameMonthly" id="form_same_monthly" value="true" checked />
+                            <label for="form_same_monthly">Use same payment method for down payment and monthly payments</label>
+                        </div>
+                        <div class="col-12" style="display: none;">
+                            <input type="checkbox" name="SameBilling" id="form_same_billing" value="true" checked />
+                            <label for="form_same_billing">Use same address for contact and billing</label>
+                        </div>
+
+                        <div class="col-12" style="display: none;">
+                            <input type="checkbox" name="DigitallySigned" id="form_digitally_signed" value="true" checked />
+                        </div>
                         <div class="card-header">
-                            <h4 class="text-center">Payment Details (Down Payment)</h4>
+                            <h4 class="text-center">Down Payment Details </h4>
                         </div>
                         <div class="card-body">
-                            <div class="accordion">
+                            <div class="accordion" id="paymentAccordion">
                                 <div class="accordion-item">
                                     <h4 class="accordion-header text-center">
                                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                                 data-bs-target="#payment_card" aria-expanded="true" aria-controls="payment_card">
-                                           Pay by Credit Card
+                                            Pay by Credit Card
                                         </button>
                                     </h4>
-                                    <div id="payment_card" class="accordion-collapse collapse show mt-0">
+                                    <div id="payment_card" class="accordion-collapse collapse show mt-0" data-bs-parent="#paymentAccordion">
                                         <div class="accordion-body">
                                             <div class="row mt-1">
                                                 <div class="col-md-6">
@@ -83,7 +113,7 @@
                                                     <label for="form_downpayment_payment_card_number">Card Number</label>
                                                     <input type="text" name="DownpaymentPaymentCardNumber"
                                                            id="form_downpayment_payment_card_number" class="form-control" value=""
-                                                           placeholder="####-####-####-####" data-inputmask="'mask': '9999-9999-9999-9999'"
+                                                           placeholder="####-####-####-####" data-inputmask="'mask': '9999999999999999'"
                                                            inputmode="numeric" required />
                                                 </div>
                                             </div>
@@ -106,11 +136,11 @@
                                 <div class="accordion-item mt-1">
                                     <h4 class="accordion-header text-center">
                                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                                data-bs-target="#bank_account" aria-expanded="true" aria-controls="bank_account">
-                                           Pay by Bank Account (ACH)
+                                                data-bs-target="#bank_account" aria-expanded="false" aria-controls="bank_account">
+                                            Pay by Bank Account (ACH)
                                         </button>
                                     </h4>
-                                    <div id="bank_account" class="accordion-collapse collapse mt-0">
+                                    <div id="bank_account" class="accordion-collapse collapse mt-0" data-bs-parent="#paymentAccordion">
                                         <div class="accordion-body">
                                             <div class="row mt-1">
                                                 <div class="col-md-6">
@@ -171,6 +201,12 @@
             </div>
         </div>
     </div>
+    <div>
+        <input type="checkbox" id="confirmationCheckbox" name="confirmationCheckbox" style="margin-left: 12px; margin-top: 10px;">
+        <label for="confirmationCheckbox" style="color: #333;">I confirm that I electronically sign the contract and schedule the first payment for 30 days from today.</label>
+    </div>
+
+    <div id="confirmationCheckbox-error" class="error" style="display: none;">Please provide your consent if you agree by selecting the checkbox.</div>
     <div class="container row mt-3">
         <p class="text-center">
             You can always call us at <a href="tel:@SelfServiceVSC.AppSettings.PhoneNumberMain">
@@ -179,6 +215,14 @@
             can complete this process on the phone.
         </p>
     </div>
+    <div id="spinner" style="display: none" class="text-center mt-3">
+        <!-- Add your spinner HTML/CSS/JS code here -->
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    <div id="success" style="display: none" class="alert alert-success text-center" role="alert"></div>
+    <div id="error" style="display: none" class="alert alert-danger text-center" role="alert"></div>
     <div class="text-center mt-3">
         <button type="button" class="btn btn-success rounded-pill p-4 pt-2 pb-2" id="finalize_loan">
             Purchase
@@ -187,20 +231,37 @@
 </form>
 
 @section Scripts
-            {
+{
     <style type="text/css">
         body {
             background-image: linear-gradient(white 20%, transparent 30%, transparent 70%, white 80%), url('/img/bg/bg04.jpg');
         }
+
+        .dropdown-with-arrow {
+            position: relative;
+        }
+
+        .dropdown-arrow {
+            position: absolute;
+            top: 50%;
+            right: 10px; /* Adjust as needed */
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid #555; /* Adjust color as needed */
+            pointer-events: none; /* Ensure the arrow doesn't interfere with dropdown */
+        }
     </style>
     <script type="text/javascript">
         let selectedEstimate;
-
+        //document.getElementById('confirmationCheckbox').setCustomValidity('Please provide your consent if you agree by selecting the checkbox.');
         $(function () {
             $(":input").inputmask();
 
             function updateTerms() {
-                let downpayment = (selectedEstimate.retailRate * $("#form_downpayment").val()).toFixed(0);
+                let downpayment = (selectedEstimate.retailRate * $("#form_downpayment").val()).toFixed(2);
                 let financed = selectedEstimate.retailRate - downpayment;
                 $(".downpaymentAmount").text(downpayment);
                 $(".financedAmount").text(selectedEstimate.retailRate - downpayment);
@@ -217,6 +278,18 @@
                 }
                 else {
                     return true;
+                }
+            }
+
+            function hideError()
+            {
+                var checkbox = document.getElementById("confirmationCheckbox");
+                var errorDiv = document.getElementById("confirmationCheckbox-error");
+
+                if (checkbox.checked) {
+                    errorDiv.style.display = "none";
+                } else {
+                    errorDiv.style.display = "block";
                 }
             }
 
@@ -304,6 +377,7 @@
                     },
                     odometer_image: "required",
                     digitally_signed: "required"
+                    //confirmationCheckbox: "required"
                 },
                 messages: {
                     downpayment: "A downpayment of at least 5% is required.",
@@ -334,8 +408,33 @@
                     monthly_bank_transfer_account_number_confirmation: "Account number must match.",
                     odometer_image: "A photo of your odometer reading is required.",
                     digitally_signed: "This form must be digitally signed to proceed with the contracts."
+                    //confirmationCheckbox: "Please provide your consent if you agree by selecting the checkboxx."
                 }
             });
+            // Validate function to check if the checkbox is checked
+            function validateForm() {
+                const isCheckboxChecked = $("#confirmationCheckbox").is(":checked");
+                // var checkbox = document.getElementById("confirmationCheckbox");
+                // var errorDiv = document.getElementById("confirmationCheckbox-error");
+
+                // if (!checkbox.checked) {
+                //     // Checkbox is not checked, display error message
+                //     errorDiv.style.display = "block";
+                //     return false; // Prevent form submission
+                // } else {
+                //     // Checkbox is checked, hide error message
+                //     errorDiv.style.display = "none";
+                //     return true; // Allow form submission
+                // }
+                if (isCheckboxChecked) { return true; }
+                else {
+                    $("#confirmationCheckbox").siblings("label").addClass("fw-bold text-danger");
+                    $("#confirmationCheckbox").focus();
+                    return false;
+                }
+                
+            }
+
 
             $("#form_term,#form_downpayment").on("change keyup", (event) => { updateTerms(); });
 
@@ -370,7 +469,7 @@
                 data: JSON.stringify(""),
                 success: function (data) {
                     data.forEach((estimate) => {
-                        
+
                         if (estimate.selected === true) {
                             selectedEstimate = estimate;
                             $("form_term").empty();
@@ -394,71 +493,64 @@
             $("#finalize_loan").on(
                 "click select",
                 (event) => {
-                    preventEvent(event);
-                    // Remove non-numeric characters from the card number
+                    event.preventDefault();
+                    var successDiv = document.getElementById("success");
+                    var errorDiv = document.getElementById("error");
+                    var spinnerDiv = document.getElementById("spinner");
+                    errorDiv.style.display = "none";
+                    successDiv.style.display = "none";
+                    spinnerDiv.style.display = "none";
                     var cardNumber = $("#form_downpayment_payment_card_number").val().replace(/[^0-9]/g, '');
                     let form = $("#payment_form");
-               
-                    console.log($("#payment_form").serialize())
-                    if (form.valid()) {
-                        if ($("#form_digitally_signed").is(":checked")) {
-                            if (confirm("This action will electronically sign the contract and schedule the first payment for 30 days from today. Proceed?")) {
-                                formSubmit({
-                                    form: form,
-                                    formType: "",
-                                    url: "/finalize",
-                                    successFunction: function (data) {
-                                        if (data === false) {
-                                            // Something has gone wrong, we need to handle this visually
-                                        }
-                                        else {
-                                            // Save documents locally, display loan/contract IDs, print
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                        else {
-                            $("#form_digitally_signed").siblings("label").addClass("fw-bold text-danger");
-                            $("#form_digitally_signed").focus();
-                        }
-                    }
-                });
-            $("#finalize_loan").on("click select", (event) => {
-                preventEvent(event);
-                // Remove non-numeric characters from the card number
-                var cardNumber = $("#form_downpayment_payment_card_number").val().replace(/[^0-9]/g, '');
-                let form = $("#payment_form");
+                    var purchaseButton = $("#finalize_loan");
+                    console.log($("#payment_form").serialize());
+                    validateForm();
+                    if (form.valid() && validateForm()) {
+                        successDiv.innerText = "Your method of payment is being applied and your service contract coverage is being generated  \nPlease do not click anything or move away from this page until this process is complete";
+                        successDiv.style.display = "block";
+                        purchaseButton.prop('disabled', true).text("Generating...");
+                        // purchaseButton.text("Generating...");
+                        spinnerDiv.style.display = "block";
 
-                if (form.valid()) {
-                    if (confirm("This action will electronically sign the contract and schedule the first payment for 30 days from today. Proceed?")) {
-                        var requestData = {
-                            FirstName: "API",
-                            LastName: "USER",
-                            SslAmount: '1.00'
-                        };
-                        
-                        $.ajax({
-                            url: "/GetToken",
-                            type: "POST",
-                            contentType: "application/json",
-                            data: JSON.stringify(requestData),
-                            success: function (data) {
-                                if (data === false) {
-                                    // Something has gone wrong, handle this visually
+                        formSubmit({
+                            form: form,
+                            formType: "",
+                            url: "/finalizePaymentPlan",
+                            successFunction: function (data) {
+                                var responseData = JSON.parse(data);
+
+                                if (!responseData) {
+                                    successDiv.style.display = "none";
+                                    console.error("API call failed.");
+                                    errorDiv.innerText = "Payment request failed, please try again.";
+                                    errorDiv.style.display = "block";
+                                    //purchaseButton.text("Purchase");
+                                    purchaseButton.prop('disabled', false).text("Purchase");
+                                    // setTimeout(function () {
+                                    //     errorDiv.style.display = "none";
+                                    // }, 3000);
                                 } else {
-                                    // Save documents locally, display loan/contract IDs, print
-                                    pay(data);
+                                    //purchaseButton.text("Purchase");
+                                    purchaseButton.prop('disabled', false).text("Purchase");
+                                    console.log("API call successful:", responseData);
+                                    // Assuming responseData contains a property like 'successMessage'
+                                    successDiv.innerText = "Payment Complete";
+                                    setTimeout(function () {
+                                        successDiv.style.display = "none";
+                                        window.location = "/payment-process-payment-plan";
+                                    }, 3000);
                                 }
+                                spinnerDiv.style.display = "none";
                             },
-                            error: function (xhr, textStatus, errorThrown) {
-
-                                console.error("Error:", errorThrown);
+                            error: function (xhr, status, error) {
+                                console.error("AJAX request failed:", status, error);
                             }
                         });
+
                     }
                 }
-            });
+            );
+
         });
     </script>
 }

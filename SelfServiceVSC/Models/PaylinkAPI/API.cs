@@ -20,9 +20,9 @@ namespace AAC.SelfServiceVSC.Models.PaylinkAPI
 		}
 
 		public static async Task<SubmitContractResponse> SubmitContract(
-			Contract contract)
+			PlanContract contract)
 		{
-			return await Send<SubmitContractResponse, Contract>(contract, "SubmitContract/?format=json", HttpMethod.Post);
+			return await Send<SubmitContractResponse, PlanContract>(contract, "SubmitContract/?format=json", HttpMethod.Post);
 		}
 
 		public static async Task<SellerAdminRelationshipResponse> SellerAdminRelationship()

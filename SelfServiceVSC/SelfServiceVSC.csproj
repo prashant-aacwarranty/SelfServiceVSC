@@ -9,14 +9,22 @@
 			0.0.$([System.DateTime]::UtcNow.ToString("MMdd")).$([System.DateTime]::UtcNow.ToString("HHmm"))
 		</VersionPrefix>
 		<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
-	  <UserSecretsId>f3b3c2f4-a2e7-4420-8d19-33854fa9dfc9</UserSecretsId>
-	  <ApplicationIcon />
-	  <OutputType>Exe</OutputType>
-	  <StartupObject />
-  </PropertyGroup>
+		<UserSecretsId>5ty4</UserSecretsId>
+		<ApplicationIcon />
+		<OutputType>Exe</OutputType>
+		<StartupObject />
+	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="iTextSharp.LGPLv2.Core" Version="3.4.18" />
 		<PackageReference Include="MailKit" Version="4.1.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.18" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.18">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Twilio" Version="7.0.2" />
+		<PackageReference Include="Twilio.AspNet.Core" Version="8.0.2" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -24,14 +32,16 @@
 
 		<!-- currently required for the Line5 stuff which is all commented out -->
 		<ProjectReference Include="..\..\FastDB\FastDB.csproj" />
+		<ProjectReference Include="..\SelfServiceVSC.DAL\SelfServiceVSC.DAL.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="wwwroot\Images\" />
+		<Folder Include="App_Data\" />
+		<Folder Include="wwwroot\Images\" />
 	</ItemGroup>
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-	  <Exec Command="gulp $(Configuration)" />
+		<Exec Command="gulp $(Configuration)" />
 	</Target>
 
 </Project>

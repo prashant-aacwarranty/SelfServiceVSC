@@ -1,0 +1,176 @@
+@using AAC.SelfServiceVSC
+@using AAC.SelfServiceVSC.Models
+
+@{
+    Layout = "_Layout2";
+    ViewData["Title"] = "Phone Page";
+}
+<div class ="row">
+<div class="col-md-6">
+    <div class="card transparent">
+        
+        <div class="card-body">
+            <div class="form-group">
+                <label for="form_vin">VIN</label>
+                <input type="text" name="vin" id="form_vin" class="form-control" value=""
+                           onblur="callVinDecoder()" placeholder="Type your vehicle's full VIN" readonly />
+            </div>
+            <div class="form-group">
+                <label for="form_year">Year</label>
+                @* <select name="year" id="form_year" class="form-control" readonly>
+                <option selected value="">Select</option>
+                @{
+                for (Int32 i = -1; i < 5; i++)
+                {
+                <text>
+                <option value="@(DateTime.Now.Year - i)">@(DateTime.Now.Year - i)</option>
+                </text>
+                }
+                }
+                </select> *@
+                <input type="text" name="year" id="form_year" class="form-control" value=""
+                       placeholder="Select" readonly />
+            </div>
+            <div class="form-group">
+                <label for="form_make">Make</label>
+                <input name="make" id="form_make" class="form-control" placeholder="Select" readonly>
+                @*<option selected value="">Select</option>*@
+                </input>
+            </div>
+            <div class="form-group">
+                <label for="form_model">Model</label>
+                <input name="model" id="form_model" class="form-control" placeholder="Select" readonly>
+                @* <option selected value="">Select</option> *@
+                @* <option selected value="">Choose a Make</option> *@
+                </input>
+            </div>
+            <div class="form-group">
+                <label for="form_mileage">Current Odometer Reading</label>
+                <input type="text" name="mileage" id="form_mileage" class="form-control" value=""
+                           placeholder="Type your current odometer reading" data-inputmask="'regex': '\\d{1,6}'" inputmode="numeric" readonly />
+            </div>
+           
+            
+        </div>
+    </div>
+</div>
+<div class="col-md-6">
+    <div class="card transparent">
+        <div class="card-body">
+            <h5>Upload Odometer Image</h5>
+                <div class="form-group col-12" style="color: #333;">
+                    @* <label for="form_odometer_image">Please upload a photo of your vehicle’s current odometer reading (photo must match the odometer reading you entered for your quote)</label><br /> *@
+                    <input type="file" name="OdometerImage" id="form_odometer_image" /><br />
+                    <button class="btn btn-success mt-3" id="uploadButton" style="width: 250px;">Upload</button>
+                    <label>Please upload a file</label>
+                </div>
+            <!-- Add your upload odometer form elements here -->
+        </div>
+    </div>
+</div>
+</div>
+<div id="error" style="display: none" class="alert alert-danger" role="alert"></div>
+<div id="success" style="display: none" class="alert alert-success" role="alert"></div>
+@section Scripts 	{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            callVinDecoder(); // Call the function on page load
+            var VinDropdown = $('#form_vin');
+            var OdometerReading = $('#form_mileage');
+            VinDropdown.val("@ViewBag.Value1");
+            OdometerReading.val(@ViewBag.Value2);
+
+        });
+
+        function callVinDecoder() {
+            // Get the entered VIN
+            var vin = "@ViewBag.Value1";
+            $.ajax({
+                url: "/VINdecoder",
+                type: 'GET',
+                data: { vin: vin },
+                success: function (data) {
+                    // Handle the VIN decoder API response data
+                    var yearDropdown = $('#form_year');
+                    var makeDropdown = $('#form_make');
+                    var modelDropdown = $('#form_model');
+
+                    // Update Year dropdown
+                    if (data.year) {
+                        yearDropdown.val(data.year);
+                    }
+
+                    // Update Make dropdown
+                    if (data.make) {
+                        //makeDropdown.empty();
+                        makeDropdown.val(data.make);
+                        //  makeDropdown.append('
+                    }
+
+                    // Update Model dropdown
+                    if (data.model) {
+                        modelDropdown.empty(); // Clear existing options before appending new ones
+                        //modelDropdown.append('
+
+
+                        //modelDropdown.empty();
+                        modelDropdown.val(data.model);
+                        //modelDropdown.append('
+                            // modelDropdown.val('
+                        //  modelDropdown.val = modelDropdown1;
+
+                    }
+                },
+                error: function (error) {
+                    // Handle errors
+                    console.error('There was a problem with the AJAX operation:', error);
+                    $('#vinDecoderResponse').html('Error: ' + error.statusText);
+                    $('#vinDecoderResponse').html('VIN Decoder Response: ' + JSON.stringify(data));
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $("#form_odometer_image").val("");
+            $("#uploadButton").on("click", function () {
+                var vin = $("#form_vin").val();
+                var formData = new FormData($("#your_form_id")[0]);
+                var fileInput = $("#form_odometer_image")[0].files[0];
+                formData.append("vin", vin);
+                formData.append("file", fileInput);
+                $.ajax({
+                    url: "/SaveFileFromPhone",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var successDiv = document.getElementById("success");
+                        var errorDiv = document.getElementById("error");
+                        if (data.message == "Please upload a file first.") {
+                            errorDiv.innerText = "Please choose a file first!";
+                            errorDiv.style.display = "block";
+
+                            setTimeout(function () {
+                                errorDiv.style.display = "none";
+                            }, 3000);
+                        }
+                        else if (data.message == "Upload successful!") {
+                            successDiv.innerText = "Odometer pic uploaded successfully!";
+                            successDiv.style.display = "block";
+
+                            // setTimeout(function () {
+                            //     successDiv.style.display = "none";
+                            // }, 3000);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error uploading file", error);
+
+                    }
+                });
+            });
+        });
+
+    </script>
+}

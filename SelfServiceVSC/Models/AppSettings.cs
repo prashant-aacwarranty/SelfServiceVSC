@@ -45,7 +45,7 @@ namespace AAC.SelfServiceVSC.Models
 		/// </summary>
 		internal Int32 IdleTimeout { get; set; }
 
-		internal String SCSAPIBaseURL { get; set; }
+		internal String SCSAPIBaseURL { get; set; } = @"https://rating.scsautoexpress.com/scs.express.webservice/";
 
 		internal String SCSAPIUserId { get; set; }
 
@@ -66,5 +66,7 @@ namespace AAC.SelfServiceVSC.Models
 		internal String MailUsername { get; set; } = "programming@aacwarranty.com";
 
 		internal String MailPassword { get; set; }
+		internal String FlowrouteUsername { get; set; }
+		internal String FlowroutePassword { get; set; }
 	}
 }

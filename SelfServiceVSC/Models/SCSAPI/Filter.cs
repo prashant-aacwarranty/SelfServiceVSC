@@ -12,14 +12,15 @@ namespace AAC.SelfServiceVSC.Models.SCSAPI
 		public Int64? TermMin { get; set; } = null;
 		
 		public Boolean TermMinSpecified { get { return TermMin != null; } }
+		//public Boolean TermMinSpecified { get; set; } = false;
 
 		/// <summary>
 		/// Maximum Term Months
 		/// </summary>
 		public Int64? TermMax { get; set; } = null;
-		
-		public Boolean TermMaxSpecified { get { return TermMax != null; } }
 
+		public Boolean TermMaxSpecified { get { return TermMax != null; } }
+		//public Boolean TermMaxSpecified { get; set; } = false;
 		/// <summary>
 		/// Minimum Term Mileage
 		/// </summary>

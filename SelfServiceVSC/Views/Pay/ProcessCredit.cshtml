@@ -34,17 +34,19 @@
     <button type="button" class="btn btn-success btn-lg rounded-pill p-4 pt-2 pb-2" id="DownloadPDF">
         Download PDF
     </button>
-    </div>
+ @*    <button type="button" class="btn btn-success btn-lg rounded-pill p-4 pt-2 pb-2" id="VoidContract">
+       Cancel Contract
+    </button> *@
+</div>
 @section Scripts
-	{
-	<style type="text/css">
-		body {
-			background-image: linear-gradient(white 20%, transparent 30%, transparent 70%, white 80%), url('/img/bg/bg04.jpg');
-		}
-	</style>
+{
+    <style type="text/css">
+        body {
+            background-image: linear-gradient(white 20%, transparent 30%, transparent 70%, white 80%), url('/img/bg/bg04.jpg');
+        }
+    </style>
     <script type="text/javascript">
         $("#DownloadPDF,#linkDownloadPDF").on("click", function () {
-            debugger
             $.ajax({
                 url: '/DownloadPDF',
                 method: 'GET',
@@ -68,5 +70,28 @@
             });
         });
 
-        </script>
-        }
+        $(document).ready(function () {
+            $("#VoidContract").on("click", function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/voidPlan",
+                    headers: {
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function (response) {
+                        if (response) {
+                            alert("Contract has been voided successfully.");
+                        } else {
+                            alert("Failed to void the contract.");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error:", error);
+                        alert("An error occurred while processing your request.");
+                    }
+                });
+            });
+        });
+
+    </script>
+}

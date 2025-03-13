@@ -1,0 +1,146 @@
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var session = this.Context.Session.GetSessionDetails();
+}
+<div id="error" style="display: none" class="alert alert-danger" role="alert"></div>
+<div id="success" style="display: none" class="alert alert-success" role="alert"></div>
+<div class="container row" id="choosePaymentOption" >
+    @* <div id="odometer" style="display: none;"> *@
+    <div class="card-header">
+        <h6 class="text-center">Confirm Your Odometer</h6>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="container row mt-3">
+                <div class="form-group col-12" style="color: #333;">
+                    @* <label for="form_odometer_image">Please upload a photo of your vehicle’s current odometer reading (photo must match the odometer reading you entered for your quote)</label><br /> *@
+                    <label for="form_odometer_image">1) Upload odometer picture from your device.</label><br />
+                    <input type="file" name="OdometerImage" id="form_odometer_image" /><br />
+                    <button class="btn btn-success mt-3" id="uploadButton" style="width: 250px;">Upload</button>
+                    <label>Please upload a file</label>
+                    <div class="form-group col-12" style="color: #333;">
+                        <input type="checkbox" name="DigitallySigned" id="form_digitally_signed" value="true" style="display: inline-block; vertical-align: middle;" />
+                        <label for="form_digitally_signed" style="display: inline-block; margin-right: 10px;">
+                            I hereby certify that I am the above person and this information is true and
+                            correct
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* </div> *@
+    <div class="row">
+        <div class="card-header">
+            <h6 class="text-center">Choose Your Payment Method</h6>
+        </div>
+        <div class="container row mt-3">
+            <div class="form-group col-4">
+                <label><a href="#" id="payByCreditCard" class="mt-3" style="color: #333;">Pay In Full (Credit Card)</a></label>
+            </div>
+            <div class="form-group col-4">
+                <button class="btn btn-sm btn-success mt-0" id="btpayByCreditCard" style="display: inline-block;width: 350px;">Pay in Full Now and Save</button>
+            </div>
+
+        </div>
+        <div class="container row mt-3">
+            <div class="form-group col-4">
+                <label><a href="#" id="choosePaymentPlan" class="mt-3" style="color: #333;"> Choose a Payment Plan</a></label>
+            </div>
+            <div class="form-group col-4">
+                <button class="btn btn-sm btn-success mt-0" id="btchoosePaymentPlan" style="display: inline-block;width: 350px;">Payment Plan Option</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script type="text/javascript">
+         $(document).ready(function () {
+                        $("#form_odometer_image").val("");
+                        $("#uploadButton").on("click", function () {
+
+                            var formData = new FormData();
+                            var fileInput = $("#form_odometer_image")[0].files[0];
+
+                            formData.append("file", fileInput);
+                            $.ajax({
+                                url: "/SaveFile",
+                                type: "POST",
+                                data: formData,
+                                processData: false,
+                                contentType: false,
+                                success: function (data) {
+                                    var successDiv = document.getElementById("success");
+                                    var errorDiv = document.getElementById("error");
+                                    if (data.message == "Please upload a file first.") {
+                                        errorDiv.innerText = "Please choose a file first!";
+                                        errorDiv.style.display = "block";
+
+                                        setTimeout(function () {
+                                            errorDiv.style.display = "none";
+                                        }, 3000);
+                                    }
+                                    else if (data.message == "Upload successful!") {
+                                        successDiv.innerText = "Odometer pic uploaded successfully!";
+                                        successDiv.style.display = "block";
+
+                                        // setTimeout(function () {
+                                        //     successDiv.style.display = "none";
+                                        // }, 3000);
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error("Error uploading file", error);
+
+                                }
+                            });
+                        });
+         });
+        $("#payByCreditCard,#btpayByCreditCard").on("click", function (event) {
+
+                const isCheckboxChecked = $("#form_digitally_signed").is(":checked");
+                const fileInput = document.getElementById("form_odometer_image");
+                if (isCheckboxChecked && fileInput.files.length !== 0 ) {
+                    event.preventDefault();
+                    window.location = "/payment-details";
+                } else if (!isCheckboxChecked) {
+                    $("#form_digitally_signed").siblings("label").addClass("fw-bold text-danger");
+                    $("#form_digitally_signed").focus();
+                }
+                else if (fileInput.files.length === 0) {
+                    $("#form_odometer_image").siblings("label").addClass("fw-bold text-danger");
+                    $("#form_odometer_image").focus();
+
+                    fileInput.addEventListener("change", function () {
+                        if (this.files.length > 0) {
+                            $("#form_odometer_image").siblings("label").removeClass("fw-bold text-danger");
+                        }
+                    });
+                }
+        });
+        $("#choosePaymentPlan,#btchoosePaymentPlan").on("click", function (event) {
+
+                const isCheckboxChecked = $("#form_digitally_signed").is(":checked");
+                const fileInput = document.getElementById("form_odometer_image");
+                if (isCheckboxChecked && fileInput.files.length !== 0) {
+                    event.preventDefault();
+                    window.location = "/payment-plans";
+                } else if (!isCheckboxChecked) {
+                    $("#form_digitally_signed").siblings("label").addClass("fw-bold text-danger");
+                    $("#form_digitally_signed").focus();
+                }
+                else if (fileInput.files.length === 0) {
+                    $("#form_odometer_image").siblings("label").addClass("fw-bold text-danger");
+                    $("#form_odometer_image").focus();
+
+                    fileInput.addEventListener("change", function () {
+                        if (this.files.length > 0) {
+                            $("#form_odometer_image").siblings("label").removeClass("fw-bold text-danger");
+                        }
+                    });
+                }
+        });
+    </script>
+}

@@ -105,7 +105,7 @@ namespace AAC.SelfServiceVSC.Models.SCSAPI
 
 		public IEnumerable<RateClassMoney> GetMainRates(PlanRate planRate)
 		{
-			return planRate.RateClassMoneys.Where(rateClassMoney => rateClassMoney.Deductible.DeductAmt == 0m);
+			return planRate.RateClassMoneys.Where(rateClassMoney => rateClassMoney.Deductible.DeductAmt == 200m || rateClassMoney.Deductible.DeductAmt == 100m || rateClassMoney.Deductible.DeductAmt == 0m);
 		}
 
 		[XmlIgnore, JsonIgnore]

@@ -25,7 +25,9 @@ namespace AAC.SelfServiceVSC.Models.Form
 		{
 			get
 			{
-				return MileageInt <= 20000 ? "N" : "U";
+				//return MileageInt <= 20000 ? "N" : "U";
+				return MileageInt <= 20000 ? "N" : "N";
+
 			}
 		}
 

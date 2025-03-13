@@ -27,6 +27,78 @@
         <br />
         <br />
         <br />
-        You may click here to download a PDF copy of your vehicle service contract and payment plan documentation.
+        @* <label><a href="#" id="linkDownloadPDF">You may click here to download a PDF copy of your vehicle service contract and payment plan documentation.</a></label>*@
+         <label>
+            You may click here to download a PDF copy of your
+                <a href="#" id="linkDownloadPDF" style="text-decoration: underline;">Vehicle Service Contract</a>
+              @*   and
+                <a href="#" id="linkPaymentPlan" style="text-decoration: underline;">Payment Plan Documentation</a> *@
+        </label>
     </h4>
 </div>
+<div class="text-end mt-3 mb-5">
+    <button type="button" class="btn btn-success btn-lg rounded-pill p-4 pt-2 pb-2" id="DownloadPDF">
+        Download PDF
+    </button>
+  @*   <button type="button" class="btn btn-success btn-lg rounded-pill p-4 pt-2 pb-2" id="VoidContract">
+        Cancel Contract
+    </button> *@
+</div>
+@section Scripts
+{
+    <style type="text/css">
+        body {
+            background-image: linear-gradient(white 20%, transparent 30%, transparent 70%, white 80%), url('/img/bg/bg04.jpg');
+        }
+    </style>
+    <script type="text/javascript">
+        $("#DownloadPDF,#linkDownloadPDF").on("click", function () {
+            $.ajax({
+                url: '/DownloadPDF',
+                method: 'GET',
+                xhrFields: {
+                    responseType: 'blob' // Set the response type to blob
+                },
+                success: function (data) {
+                    var blob = new Blob([data], { type: 'application/pdf' });
+                    var blobUrl = URL.createObjectURL(blob);
+                    var link = document.createElement('a');
+                    link.href = blobUrl;
+                    link.download = 'Contract.pdf';
+                    document.body.appendChild(link)
+                    link.click();
+                    document.body.removeChild(link);
+                    console.log("PDF downloaded successfully");
+                },
+                error: function (error) {
+                    console.error("Error downloading PDF:", error);
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            $("#VoidContract").on("click", function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/voidPlan",
+                    headers: {
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function (response) {
+                        if (response) {
+                            alert("Contract has been voided successfully.");
+                        } else {
+                            alert("Failed to void the contract.");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error:", error);
+                        alert("An error occurred while processing your request.");
+                    }
+                });
+            });
+        });
+
+    </script>
+}
+

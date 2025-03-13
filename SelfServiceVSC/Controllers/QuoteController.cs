@@ -217,7 +217,7 @@ namespace SelfServiceVSC.Controllers
 
 		[HttpPost, Route("/FinalizeLoan")]
 		public async Task<JsonResult> FinalizeLoan(
-			[FromBody] PaymentRequest paymentRequest)
+			[FromBody] AAC.SelfServiceVSC.Models.Form.PaymentRequest paymentRequest)
 		{
 			return Json(null);
 

@@ -1,138 +1,224 @@
 @{
-	ViewData["Title"] = "Contract Details";
+    ViewData["Title"] = "Contract Details";
 
-	var session = this.Context.Session.GetSessionDetails();
+    var session = this.Context.Session.GetSessionDetails();
 }
 
-@if (SelfServiceVSC.AppSettings.IsDevelopment)
-{
-	<pre>
-		@Json.Serialize(session);
-	</pre>
-}
+@* @if (SelfServiceVSC.AppSettings.IsDevelopment)
+{ 
+    <pre>
+        @Json.Serialize(session);
+                        </pre>
+ } *@
+<style>
+    /* Popup styles */
+    .popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        border: 1px solid orange;
+        border-radius: 5px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        max-width: 500px;
+    }
 
+        .popup button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            border: none;
+            background-color: orange; /* Changed to orange color */
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+    /* Overlay styles */
+    .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+</style>
+<div class="overlay" id="overlay"></div>
+<div class="popup" id="popup">
+    <p>On your mobile phone, go to <a href="http://www.bestpriceprotection.com" target="_blank">www.bestpriceprotection.com</a>, start a new quote, and enter your VIN. The system will pick up where you left off, and you will be able to upload a picture of your current odometer reading using your mobile phone camera.</p>
+    <button onclick="hidePopup()">OK</button>
+</div>
 <div id="error" style="display: none" class="alert alert-danger" role="alert"></div>
 <div id="success" style="display: none" class="alert alert-success" role="alert"></div>
 
 <div class="container" id="estimateListParent">
-	<div class="row" id="estimateListContainer">
-		<div class="col-md-6 p-1 d-none" id="estimateTemplate">
-			<div class="card estimate">
-				<div class="card-body">
-					<div class="row">
-						<div class="col-md-12">
-							<span class="termMonths"></span> Month / <span class="termMiles"></span> mile <span
-								class="planName"></span>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-6">
-							$ <span class="deductible"></span> Deductible
-						</div>
-						<div class="col-md-6">
-							Cost: $ <span class="cost"></span>
-						</div>
+    <h4 style="text-align: center; margin: 20px 0;">Choose the coverage that suits you best.</h4>
+
+
+    <div class="row" id="vehicleDetails">
+        <div class="col-md-4" style="color: #000000;">
+            <strong>VIN:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong> <span style="color: darkslategray;">@session.EstimateRequest.VIN</span>
+        </div>
+        <div class="col-md-4" style="color: #000000;">
+            <strong>Year:&nbsp;&nbsp;&nbsp;</strong> <span style="color: darkslategray;">@session.EstimateRequest.Year</span>
+        </div>
+        <div class="col-md-4" style="color: #000000;">
+            <strong>Current odometer reading:&nbsp;&nbsp;&nbsp;</strong> <span style="color: darkslategray;">@session.EstimateRequest.MileageInt</span>
+        </div>
+        <div class="col-md-4" style="color: #000000;">
+            <strong>Make:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong> <span style="color: darkslategray;">@session.EstimateRequest.Make</span>
+        </div>
+        <div class="col-md-4" style="color: #000000;">
+            <strong>Model:</strong> <span style="color: darkslategray;">@session.EstimateRequest.Model</span>
+        </div>
+        <hr />
+        <div id="deductibleOptions" style="text-align: center;">
+            <label for="deductible" style="display: inline-block; margin-right: 10px;font-weight: bold;color: #000000;font-size: 1.2em;">Select Deductible:</label>
+            <label for="deductible200" style="display: inline-block; margin-right: 10px;"><input type="radio" name="deductible" id="deductible200" value="200" checked><span style="color: darkslategray;font-size: 1.2em;">$200</span></label>
+            <label for="deductible100" style="display: inline-block; margin-right: 10px;"><input type="radio" name="deductible" id="deductible100" value="100"><span style="color: darkslategray;font-size: 1.2em;">$100</span></label>
+            <label for="deductible0" style="display: inline-block; margin-right: 10px;"><input type="radio" name="deductible" id="deductible0" value="0"><span style="color: darkslategray;font-size: 1.2em;">$0</span></label>
+        </div>
+      
+
+
+    </div>
+
+    <div class="row" id="estimateListContainer">
+        <div class="col-md-6 p-1 d-none" id="estimateTemplate">
+            <div class="card estimate">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12" style="font-size: 1.2em;">
+                            <span class="termMonths"></span> Month / <span class="termMiles"></span> mile <span class="planName"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            $ <span class="deductible"></span> Deductible
+                        </div>
+                        <div class="col-md-6">
+                            Cost with Payment Plan: $ <span class="cost"></span>
+                        </div>
                         <div class="col-md-6"></div>
                         <div class="col-md-6">
-                            <label id="cost_after_discount">Cost(after 10% discount): $</label>
+                            <label id="cost_after_discount">Save an additional : $ by paying in full today.</label>
                         </div>
-					</div>
-					<div class="row">
-						<div class="col-md-12">
-							Per Month: $ <span class="costPerMonth"></span> (<span class="paymentMonths"></span> monthly payments)
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="col-md-12 text-center">
-		@* todo: error inline here? *@
-		<button type="button" class="btn btn-success rounded-pill p-4 pt-2 pb-2" id="chooseEstimate">
-			Select this Service Contract and Proceed
-		</button>
-	</div>
-</div>
-
-<div class="container row" id="estimateDetails" style="display: none;">
-	<h4 class="text-center">Selected Contract Details</h4>
-	<div class="row">
-		<div class="col-md-6">
-			<span class="planName"></span>
-		</div>
-        <div class="col-md-6">
-            $ <span class="deductible"></span> Deductible
-        </div>
-	</div>
-	
-	<div class="row">
-		<div class="col-md-6">
-			Cost: $ <span class="cost"></span>
-		</div>
-        <div class="col-md-6">
-            Expiration Date:  <span class="expirationD"></span>
-        </div>
-	</div>
-    
-    <div class="row">
-        <div class="col-md-6">
-            Expiration Mileage: $ <span class="expirationM"></span>
-        </div>
-    </div>
-</div>
-
-<div class="container row" id="choosePaymentOption" style="display: none;">
-    <div class="row">
-        <div class="col-lg-14">
-            Please upload a photo of your vehicle’s current odometer reading (photo must match the odometer reading you entered for your quote)
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="card-header">
-            <h6 class="text-center">Confirm Your Odomter</h6>
-        </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="container row mt-3">
-                    <div class="form-group col-12">
-                        <label for="form_odometer_image">Please attach a photo of your odometer here:</label><br />
-                        <input type="file" name="OdometerImage" id="form_odometer_image" /><br />
-                        <button class="btn btn-success mt-3" id="uploadButton">Upload</button>
-                        <label>Please upload a file</label>
                     </div>
-                    <div class="form-group col-12">
-                        <label for="form_digitally_signed">
-                            I hereby certify that I am the above person and this information is true and
-                            correct
-                        </label><br />
-                        <input type="checkbox" name="DigitallySigned" id="form_digitally_signed" value="true" />
+                    <div class="row">
+                        <div class="col-md-12" style="font-size: 1.2em;">
+                            Per Month: $ <span class="costPerMonth"></span> (<span class="paymentMonths"></span> monthly payments)
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <div class="col-md-12 text-center">
+        @* todo: error inline here? *@
+        <button type="button" class="btn btn-success rounded-pill p-4 pt-2 pb-2" id="chooseEstimate">
+            Select this Service Contract and Proceed
+        </button>
+    </div>
+
+</div>
+
+
+<div class="row" id="estimateDetails" style="display: none;color: #333333;">
+    <h4 class="text-center">Your Coverage</h4>
+    <div class="row" style="margin-left: 7px;">
+        <div style="color: #000000;">
+            <strong>Coverage:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong> <span class="planName"></span>
+        </div>
+        <div style="color: #000000;">
+            <strong>Deductible (per covered repair):&nbsp;</strong> $<span class="deductible"></span>
+        </div>
+        <div style="color: #000000;">
+            <strong>Cost:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong> $<span class="cost"></span>
+        </div>
+        <div style="color: #000000;">
+            <strong>Coverage Expiration Date:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong> <span class="expirationD"></span>
+        </div>
+        <div style="color: #000000;">
+            <strong>Coverage Expiration Mileage:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong> <span class="expirationM"></span>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="container row" id="choosePaymentOption" style="display: none;">
+    @* <div id="odometer" style="display: none;"> *@
+    <button class="btn btn-success mt-3 mb-2" id="backtocontractdetails" style="width: 200px;">Back</button>
+        <div class="card-header">
+            <h6 class="text-center">Confirm Your Odometer</h6>
+        </div>
+
+
 
     <div class="row">
+        <div class="col-lg-12">
+            <div class="container row mt-3">
+                <div class="form-group col-12" style="color: #333;">
+                    <label for="form_odometer_image">1) Upload a photo of this vehicle's current odometer from your computer</label><br />
+                    <input type="file" name="OdometerImage" id="form_odometer_image" /><br />
+                    @* <button class="btn btn-success mt-3" id="uploadButton" style="width: 250px;">Upload</button>
+                    <label>Please upload a file</label> *@
+                    <div class="form-group col-12" style="color: #333;">
+                        <input type="checkbox" name="DigitallySigned" id="form_digitally_signed" value="true" style="display: inline-block; vertical-align: middle;" />
+                        <label for="form_digitally_signed" style="display: inline-block; margin-right: 10px;">
+                            I hereby certify that I am the above person and this information is true and correct
+                        </label>
+                    </div>
+                </div>
 
-	    <div class="card-header">
+                <!-- OR Separator -->
+                <div class="col-12 my-3">
+                    <strong>OR</strong>
+                </div>
+
+                <div class="form-group col-12" style="color: #333;">
+                    <label>2) Upload an odometer picture from your mobile phone instead of your computer</label><br />
+                    <button class="btn btn-success mt-3 mb-3" id="switchToPhone" style="width: 650px;" onclick="switchToPhone()">Click here to save your current progress and continue on your mobile phone.</button>
+                </div>
+
+                <!-- Signature Pad -->
+                <div class="form-group col-12" style="color: #333;">
+                    <label>3) Draw your Signature</label><br />
+                    <canvas id="signature-pad" class="border rounded" width="500" height="200" style="border: 1px solid #333;"></canvas><br />
+                    <button class="btn btn-danger mt-2" id="clearSignature" style="width: 150px;">Clear</button>
+                    <input type="hidden" name="SignatureData" id="signatureData">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* </div> *@
+    <div class="row">
+        <div class="card-header">
             <h6 class="text-center">Choose Your Payment Method</h6>
         </div>
         <div class="container row mt-3">
             <div class="form-group col-4">
-                <label><a href="#" id="payByCreditCard" class="mt-3">Pay By Credit Card (10% discount off quoted price)</a></label>
+                <label><a href="#" id="payByCreditCard" class="mt-3" style="color: #333;">Pay In Full (Credit Card)</a></label>
             </div>
             <div class="form-group col-4">
-                <button class="btn btn-sm btn-success mt-0" id="btpayByCreditCard" style="display: inline-block;">Pay By Credit Card</button>
+                <button class="btn btn-sm btn-success mt-0" id="btpayByCreditCard" style="display: inline-block;width: 350px;">Pay in Full Now and Save</button>
             </div>
-           
+
         </div>
         <div class="container row mt-3">
             <div class="form-group col-4">
-                <label><a href="#" id="choosePaymentPlan" class="mt-3"> Choose a Payment Plan</a></label>
+                <label><a href="#" id="choosePaymentPlan" class="mt-3" style="color: #333;"> Choose a Payment Plan</a></label>
             </div>
             <div class="form-group col-4">
-                <button class="btn btn-sm btn-success mt-0" id="btchoosePaymentPlan" style="display: inline-block;">Choose a Payment Plan</button>
+                <button class="btn btn-sm btn-success mt-0" id="btchoosePaymentPlan" style="display: inline-block;width: 350px;">Payment Plan Option</button>
             </div>
         </div>
     </div>
@@ -140,267 +226,418 @@
 
 
 <form id="quote_form" name="quote_form" method="post" action="/Quote">
-	<div class="container row d-none mt-3" id="quoteRequestDetails">
-		<div class="col-md-12">
-			<div class="card transparent">
-				<div class="card-header">
-					<h3 class="text-center">Proceed with This Contract</h3>
-				</div>
-				<div class="card-body">
-					<p class="form-section">Fill in your contact information to get a payment plan and view your selected
-						contract!</p>
-					<div class="row mt-1">
-						<div class="col-md-6">
-							<label for="form_fname">First Name</label>
-							<input type="text" name="fname" id="form_fname" class="form-control" value="" placeholder="First Name" />
-						</div>
-						<div class="col-md-6">
-							<label for="form_lname">Last Name</label>
-							<input type="text" name="lname" id="form_lname" class="form-control" value="" placeholder="Last Name" />
-						</div>
-					</div>
-					<div class="row mt-1">
-						<div class="col-md-6">
-							<label for="form_email">Email Address</label>
-							<input name="email" id="form_email" class="form-control" value="" placeholder="you@mail.com"
-								data-inputmask="'alias': 'email'" inputmode="email" />
-						</div>
-						<div class="col-md-6">
-							<label for="form_phone">Phone</label>
-							<input type="tel" name="phone" id="form_phone" class="form-control" value="" placeholder="(###) ###-####"
-								data-inputmask="'mask': '(999) 999-9999'" inputmode="tel" />
-						</div>
-					</div>
-					<div class="row mt-1">
-						<div class="col-md-6">
-							<label for="form_address1">Street Address</label>
-							<input type="text" name="address1" id="form_address1" class="form-control" value=""
-								placeholder="Street Address" />
-						</div>
-						<div class="col-md-6">
-							<label for="form_address2">Street Address (Cont.)</label>
-							<input type="text" name="address2" id="form_address2" class="form-control" value=""
-								placeholder="Street Address (Cont.)" />
-						</div>
-					</div>
-					<div class="row mt-1">
-						<div class="col-md-4">
-							<label for="form_city">City</label>
-							<input type="text" name="city" id="form_city" class="form-control" value="" placeholder="City" />
-						</div>
-						<div class="col-md-4">
-							<label for="form_state">State</label>
-							<select name="state" id="form_state" class="form-control">
-								<option disabled selected value="">Select State</option>
-								<option value="AL">Alabama</option>
-								<option value="AK">Alaska</option>
-								<option value="AZ">Arizona</option>
-								<option value="AR">Arkansas</option>
-								<option value="CA">California</option>
-								<option value="CO">Colorado</option>
-								<option value="CT">Connecticut</option>
-								<option value="DE">Delaware</option>
-								<option value="DC">District</option>
-								<option value="FL">Florida</option>
-								<option value="GA">Georgia</option>
-								<option value="HI">Hawaii</option>
-								<option value="ID">Idaho</option>
-								<option value="IL">Illinois</option>
-								<option value="IN">Indiana</option>
-								<option value="IA">Iowa</option>
-								<option value="KS">Kansas</option>
-								<option value="KY">Kentucky</option>
-								<option value="LA">Louisiana</option>
-								<option value="ME">Maine</option>
-								<option value="MD">Maryland</option>
-								<option value="MA">Massachusetts</option>
-								<option value="MI">Michigan</option>
-								<option value="MN">Minnesota</option>
-								<option value="MS">Mississippi</option>
-								<option value="MO">Missouri</option>
-								<option value="MT">Montana</option>
-								<option value="NE">Nebraska</option>
-								<option value="NV">Nevada</option>
-								<option value="NH">New</option>
-								<option value="NJ">New</option>
-								<option value="NM">New</option>
-								<option value="NY">New</option>
-								<option value="NC">North</option>
-								<option value="ND">North</option>
-								<option value="OH">Ohio</option>
-								<option value="OK">Oklahoma</option>
-								<option value="OR">Oregon</option>
-								<option value="PA">Pennsylvania</option>
-								<option value="RI">Rhode</option>
-								<option value="SC">South</option>
-								<option value="SD">South</option>
-								<option value="TN">Tennessee</option>
-								<option value="TX">Texas</option>
-								<option value="UT">Utah</option>
-								<option value="VT">Vermont</option>
-								<option value="VA">Virginia</option>
-								<option value="WA">Washington</option>
-								<option value="WV">West</option>
-								<option value="WI">Wisconsin</option>
-								<option value="WY">Wyoming</option>
-							</select>
-						</div>
-						<div class="col-md-4">
-							<label for="form_zip">ZIP Code</label>
-							<input type="text" name="zip" id="form_zip" class="form-control" value="" placeholder="ZIP Code"
-								data-inputmask="'mask': '99999'" inputmode="numeric" />
-						</div>
-					</div>
-					<hr />
-					<div class="text-center">
-						<button id="submit_quote" type="button" class="btn btn-success rounded-pill p-4 pt-2 pb-2">Get a Payment
-							Plan</button>
-					</div>
-					<hr />
-					<p class="text-center">You can always call us at <a href="tel:@SelfServiceVSC.AppSettings.PhoneNumberMain"><i
-								class="fas fa-phone-alt small m-1"></i>@SelfServiceVSC.AppSettings.PhoneNumberMain.FormatPhone()</a></p>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="container row d-none mt-3" id="quoteRequestDetails">
+        <div class="col-md-12">
+            <div class="card transparent">
+                <div class="card-header">
+                    <h3 class="text-center">Confirm Selection</h3>
+                </div>
+                <div class="card-body">
+                    <p class="form-section">
+                        Fill in your contact information to get a payment plan and view your selected
+                        contract!
+                    </p>
+                    <div class="row mt-1">
+                        <div class="col-md-6">
+                            <label for="form_fname">First Name</label>
+                            <input type="text" name="fname" id="form_fname" class="form-control" value="" placeholder="First Name" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="form_lname">Last Name</label>
+                            <input type="text" name="lname" id="form_lname" class="form-control" value="" placeholder="Last Name" />
+                        </div>
+                    </div>
+                    <div class="row mt-1">
+                        <div class="col-md-6">
+                            <label for="form_email">Email Address</label>
+                            <input type="email" name="email" id="form_email" class="form-control"
+                                   placeholder="you@mail.com" autocomplete="email" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="form_phone">Phone</label>
+                            <input type="tel" name="phone" id="form_phone" class="form-control" value="" placeholder="(###) ###-####"
+                                   data-inputmask="'mask': '(999) 999-9999'" inputmode="tel" />
+                        </div>
+                    </div>
+                    <div class="row mt-1">
+                        <div class="col-md-6">
+                            <label for="form_address1">Street Address</label>
+                            <input type="text" name="address1" id="form_address1" class="form-control" value=""
+                                   placeholder="Street Address" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="form_address2">Street Address (Cont.)</label>
+                            <input type="text" name="address2" id="form_address2" class="form-control" value=""
+                                   placeholder="Street Address (Cont.)" />
+                        </div>
+                    </div>
+                    <div class="row mt-1">
+                        <div class="col-md-4">
+                            <label for="form_city">City</label>
+                            <input type="text" name="city" id="form_city" class="form-control" value="" placeholder="City" />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="form_state">State</label>
+                            <select name="state" id="form_state" class="form-control">
+                                <option disabled selected value="">Select State</option>
+                                <option value="AL">Alabama</option>
+                                <option value="AK">Alaska</option>
+                                <option value="AZ">Arizona</option>
+                                <option value="AR">Arkansas</option>
+                                <option value="CA">California</option>
+                                <option value="CO">Colorado</option>
+                                <option value="CT">Connecticut</option>
+                                <option value="DE">Delaware</option>
+                                <option value="DC">District</option>
+                                <option value="FL">Florida</option>
+                                <option value="GA">Georgia</option>
+                                <option value="HI">Hawaii</option>
+                                <option value="ID">Idaho</option>
+                                <option value="IL">Illinois</option>
+                                <option value="IN">Indiana</option>
+                                <option value="IA">Iowa</option>
+                                <option value="KS">Kansas</option>
+                                <option value="KY">Kentucky</option>
+                                <option value="LA">Louisiana</option>
+                                <option value="ME">Maine</option>
+                                <option value="MD">Maryland</option>
+                                <option value="MA">Massachusetts</option>
+                                <option value="MI">Michigan</option>
+                                <option value="MN">Minnesota</option>
+                                <option value="MS">Mississippi</option>
+                                <option value="MO">Missouri</option>
+                                <option value="MT">Montana</option>
+                                <option value="NE">Nebraska</option>
+                                <option value="NV">Nevada</option>
+                                <option value="NH">New</option>
+                                <option value="NJ">New</option>
+                                <option value="NM">New</option>
+                                <option value="NY">New</option>
+                                <option value="NC">North</option>
+                                <option value="ND">North</option>
+                                <option value="OH">Ohio</option>
+                                <option value="OK">Oklahoma</option>
+                                <option value="OR">Oregon</option>
+                                <option value="PA">Pennsylvania</option>
+                                <option value="RI">Rhode</option>
+                                <option value="SC">South</option>
+                                <option value="SD">South</option>
+                                <option value="TN">Tennessee</option>
+                                <option value="TX">Texas</option>
+                                <option value="UT">Utah</option>
+                                <option value="VT">Vermont</option>
+                                <option value="VA">Virginia</option>
+                                <option value="WA">Washington</option>
+                                <option value="WV">West</option>
+                                <option value="WI">Wisconsin</option>
+                                <option value="WY">Wyoming</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="form_zip">ZIP Code</label>
+                            <input type="text" name="zip" id="form_zip" class="form-control" value="" placeholder="ZIP Code"
+                                   data-inputmask="'mask': '99999'" inputmode="numeric" />
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="text-center">
+                    <button id="submit_quote_back" type="button" class="btn btn-success rounded-pill p-4 pt-2 pb-2">
+                            Back
+                        </button>
+                        <button id="submit_quote" type="button" class="btn btn-success rounded-pill p-4 pt-2 pb-2" style="margin-top: 0px !important">
+                            Proceed to Payment
+                        </button>
+                    </div>
+                    <hr />
+                    <p class="text-center">
+                        You can always call us at <a href="tel:@SelfServiceVSC.AppSettings.PhoneNumberMain">
+                            <i class="fas fa-phone-alt small m-1"></i>@SelfServiceVSC.AppSettings.PhoneNumberMain.FormatPhone()
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 </form>
 
 <form id="estimate_form" name="estimate_form" method="post" action="/SelectEstimate">
-	<input type="hidden" id="rateId" name="rateId" value="" />
+    <input type="hidden" id="rateId" name="rateId" value="" />
 </form>
 
+
+
 @section Scripts {
-	<style type="text/css">
-		body {
-			background-image: linear-gradient(white 20%, transparent 30%, transparent 70%, white 80%, white 600%), url('/img/bg/bg02.jpg');
-		}
-	</style>
-	<script type="text/javascript">
-		$(function () {
-			$('.alert').alert();
-			$(":input").inputmask();
+    <style type="text/css">
+        body {
+            background-image: linear-gradient(white 20%, transparent 30%, transparent 70%, white 80%, white 600%), url('/img/bg/bg02.jpg');
+        }
+    </style>
+    <!-- Load SignaturePad Library -->
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
 
-			$("#quote_form").validate({
-				rules: {
-					fname: "required",
-					lname: "required",
-					email: {
-						required: true,
-						pattern: ".*@@.*\\..*"
-					},
-					phone: {
-						required: true,
-						pattern: "\\(\\d{3}\\) \\d{3}-\\d{4}"
-					},
-					address1: "required",
-					city: "required",
-					state: "required",
-					zip: {
-						required: true,
-						minlength: 5,
-						maxlength: 5
-					}
-				},
-				messages: {
-					fname: "First Name is required",
-					lname: "Last Name is required",
-					email: "Email Address is required",
-					phone: "Phone number must contain at least 10 digits",
-					address1: "Street Address is required",
-					address2: "",
-					city: "City is required",
-					state: "State is required",
-					zip: "ZIP Code must be 5 digits"
-				}
-			});
+    <script>
+        $(document).ready(function () {
+            if (typeof SignaturePad === 'undefined') {
+                console.error('SignaturePad is not loaded.');
+                return;
+            }
 
-			// this doesn't really have to be all ajaxy... we can just do this all on the page render
-			$.ajax({
-				type: "get",
-				url: "/RetrieveEstimate",
-				data: JSON.stringify(""),
-				success: function (data) {
-					data.forEach((estimate) => {
+            const canvas = document.getElementById('signature-pad');
+            if (!canvas) {
+                console.error('Canvas element not found.');
+                return;
+            }
+
+            const signaturePad = new SignaturePad(canvas);
+
+            $('#clearSignature').click(function () {
+                signaturePad.clear();
+            });
+
+            $('#uploadButton').click(function () {
+                if (!signaturePad.isEmpty()) {
+                    $('#signatureData').val(signaturePad.toDataURL());
+                }
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Wait until SignaturePad is defined
+            if (typeof SignaturePad === 'undefined') {
+                console.error('SignaturePad is not loaded.');
+                return;
+            }
+
+            // Get the canvas element
+            const canvas = document.getElementById('signature-pad');
+            if (!canvas) {
+                console.error('Canvas element with ID "signature-pad" not found.');
+                return;
+            }
+
+            // Initialize SignaturePad
+            const signaturePad = new SignaturePad(canvas);
+
+            // Clear button functionality
+            $('#clearSignature').click(function () {
+                signaturePad.clear();
+            });
+
+            // Upload button functionality
+            $('#uploadButton').click(function () {
+                if (!signaturePad.isEmpty()) {
+                    $('#signatureData').val(signaturePad.toDataURL());
+                }
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $(function () {
+            $('.alert').alert();
+            $(":input").inputmask();
+
+            $("#quote_form").validate({
+                rules: {
+                    fname: "required",
+                    lname: "required",
+                    email: {
+                        required: true,
+                        pattern: ".*@@.*\\..*"
+                    },
+                    phone: {
+                        required: true,
+                        pattern: "\\(\\d{3}\\) \\d{3}-\\d{4}"
+                    },
+                    address1: "required",
+                    city: "required",
+                    state: "required",
+                    zip: {
+                        required: true,
+                        minlength: 5,
+                        maxlength: 5
+                    }
+                },
+                messages: {
+                    fname: "First Name is required",
+                    lname: "Last Name is required",
+                    email: "Email Address is required",
+                    phone: "Phone number must contain at least 10 digits",
+                    address1: "Street Address is required",
+                    address2: "",
+                    city: "City is required",
+                    state: "State is required",
+                    zip: "ZIP Code must be 5 digits"
+                }
+            });
+
+            // this doesn't really have to be all ajaxy... we can just do this all on the page render
+            let estimateData;
+            $.ajax({
+                type: "get",
+                url: "/RetrieveEstimate",
+                data: JSON.stringify(""),
+                success: function (data) {
+                    estimateData = data;
+                    //data.sort((a, b) => b.deductAmt - a.deductAmt);
+                    const filteredData = data.filter(estimate => estimate.deductAmt === 200);
+                    filteredData.forEach((estimate) => {
                         setEstimationCost(estimate);
-						let card = $("#estimateTemplate").clone();
-						card.show();
-						card.find(".termMonths").text(estimate.term.toLocaleString());
-						card.find(".termMiles").text(estimate.mileage.toLocaleString());
-						card.find(".planName").text(estimate.planDescription);
-						card.find(".deductible").text(estimate.deductAmt.toLocaleString());
-						card.find(".cost").text(estimate.retailRate.toLocaleString());
+                        let card = $("#estimateTemplate").clone();
+                        card.show();
+                        card.find(".termMonths").text(estimate.term.toLocaleString());
+                        card.find(".termMiles").text(estimate.mileage.toLocaleString());
+                        card.find(".planName").text(estimate.planDescription);
+                        card.find(".deductible").text(estimate.deductAmt.toLocaleString());
+                        card.find(".cost").text(estimate.retailRate.toLocaleString());
 
-						// todo(rec): dangerous javascript numbers
-						card.find(".costPerMonth").text((estimate.retailRate / Math.min(24, estimate.term - 12)).toFixed(2).toLocaleString());
-						card.find(".paymentMonths").text(Math.min(24, estimate.term - 12).toLocaleString());
-						card.find(".card.estimate").attr("rateId", estimate.rateId);
-						card.removeAttr("id");
+                        // todo(rec): dangerous javascript numbers
+                        card.find(".costPerMonth").text((estimate.retailRate / Math.min(24, estimate.term - 12)).toFixed(2).toLocaleString());
+                        card.find(".paymentMonths").text(Math.min(24, estimate.term - 12).toLocaleString());
+                        card.find(".card.estimate").attr("rateId", estimate.rateId);
+                        card.removeAttr("id");
 
-						card.appendTo("#estimateListContainer");
-                        
-					});
-				},
-				contentType: "application/json"
-			});
+                        card.appendTo("#estimateListContainer");
 
-			$("body").on(
-				"click",
-				".card.estimate",
-				(event) => {
-					preventEvent(event);
-					let card = $(event.target).closest(".card.estimate");
-					let rateId = card.attr("rateId");
-					if (card.hasClass("selected")) {
-						card.removeClass("selected");
-						$("#rateId").val("");
-					}
-					else {
-						$(".card.estimate.selected").removeClass("selected");
-						card.addClass("selected");
-						$("#rateId").val(rateId)
-					}
-				});
+                    });
+                },
+                contentType: "application/json"
+            });
 
-			$("#chooseEstimate").on(
-				"click select",
-				(event) => {
-					preventEvent(event);
-					formSubmit({
-						form: $("#estimate_form"),
-						url: "/SelectEstimate",
-						failedFunction: function (xhr, status, error) {
-							// todo: maybe have these all have their own error panels near the buttons
-							$("#error").show().text(error);
-						},
-						successFunction: function (data) {
-							if (data === false) {
-								$("#error").show().text("An unknown error occurred while processing your request.");
-							}
-							else {
-								let card = $("#estimateDetails");
+           
 
-								card.find(".termMonths").text(data.term.toLocaleString());
-								card.find(".termMiles").text(data.mileage.toLocaleString());
-								card.find(".planName").text(data.planDescription);
-								card.find(".deductible").text(data.deductAmt.toLocaleString());
-								card.find(".cost").text(data.retailRate.toLocaleString());
-								card.find(".card.quote").attr("rateId", data.rateId);
+            // Function to update estimates based on selected deductible amount
+            function updateEstimates(deductibleAmt) {
+                // Filter the data to include only estimates with the selected deductible amount
+                const filteredData = estimateData.filter(estimate => estimate.deductAmt === deductibleAmt);
+
+                // Clear existing estimates
+                $('#estimateListContainer').children(':not(#estimateTemplate)').remove();
+
+                // Iterate over each estimate in the filtered data
+                filteredData.forEach((estimate) => {
+                    setEstimationCost(estimate);
+                    let card = $("#estimateTemplate").clone();
+                    card.show();
+                    card.find(".termMonths").text(estimate.term.toLocaleString());
+                    card.find(".termMiles").text(estimate.mileage.toLocaleString());
+                    card.find(".planName").text(estimate.planDescription);
+                    card.find(".deductible").text(estimate.deductAmt.toLocaleString());
+                    card.find(".cost").text(estimate.retailRate.toLocaleString());
+
+                    // Calculate and set additional values
+                    card.find(".costPerMonth").text((estimate.retailRate / Math.min(24, estimate.term - 12)).toFixed(2).toLocaleString());
+                    card.find(".paymentMonths").text(Math.min(24, estimate.term - 12).toLocaleString());
+                    card.find(".card.estimate").attr("rateId", estimate.rateId);
+                    card.removeAttr("id");
+
+                    // Replace the existing card with the modified template
+                    $("#estimateListContainer").append(card);
+                });
+            }
+
+
+            // Attach change event handler to radio buttons
+            $("input[type='radio'][name='deductible']").change(function () {
+                const deductibleAmt = parseInt($(this).val());
+                updateEstimates(deductibleAmt);
+            });
+
+            $("body").on(
+                "click",
+                ".card.estimate",
+                (event) => {
+                    preventEvent(event);
+                    let card = $(event.target).closest(".card.estimate");
+                    let rateId = card.attr("rateId");
+                    if (card.hasClass("selected")) {
+                        card.removeClass("selected");
+                        $("#rateId").val("");
+                    }
+                    else {
+                        $(".card.estimate.selected").removeClass("selected");
+                        card.addClass("selected");
+                        $("#rateId").val(rateId)
+                    }
+                });
+
+            $("#chooseEstimate").on(
+                "click select",
+                (event) => {
+                    preventEvent(event);
+                    formSubmit({
+                        form: $("#estimate_form"),
+                        url: "/SelectEstimate",
+                        failedFunction: function (xhr, status, error) {
+                            // todo: maybe have these all have their own error panels near the buttons
+                            $("#error").show().text("Please select a service contract to proceed");
+                            setTimeout(function () {
+                                document.getElementById("error").style.display = "none";
+                            }, 3000);
+                        },
+                        successFunction: function (data) {
+                            if (data === false) {
+                                $("#error").show().text("An unknown error occurred while processing your request.");
+                            }
+                            else {
+                                let card = $("#estimateDetails");
+
+                                card.find(".termMonths").text(data.term.toLocaleString());
+                                card.find(".termMiles").text(data.mileage.toLocaleString());
+                                card.find(".planName").text(data.planDescription);
+                                card.find(".deductible").text(data.deductAmt.toLocaleString());
+                                card.find(".cost").text(data.retailRate.toLocaleString());
+                                card.find(".card.quote").attr("rateId", data.rateId);
                                 var expirationDate = new Date(data.expirationDate);
                                 var formattedDate = expirationDate.toISOString().split('T')[0];
                                 card.find(".expirationD").text(formattedDate);
                                 card.find(".expirationM").text(data.expirationMileage.toLocaleString());
-                              
 
-								window.scrollTo(0, 0);
 
-								$("#estimateListParent").slideUp("slow");
-								card.slideDown("slow");
-								$("#quoteRequestDetails").slideDown("slow");
-							}
-						},
+                                window.scrollTo(0, 0);
+                                $("#quote_form").show();
+                                $("#estimateListParent").slideUp("slow");
+                                card.slideDown("slow");
+                                $("#quoteRequestDetails").slideDown("slow");
+                            }
+                        },
 
-					});
-				});
+                    });
+                });
+            $("#submit_quote_back").on(
+                "click select",
+                (event) => {
+                    preventEvent(event); // This function might be custom, probably to prevent the default behavior of the event
+                    let form = $("#quote_form");
+
+
+                    $("#quote_form").hide();
+                    window.scrollTo(0, 0);
+                    $("#estimateDetails").hide();
+                    $("#estimateListParent").show();
+                    // $("#choosePaymentOption").show();
+                    // $("#quoteRequestDetails").slideDown("slow");
+
+
+                }
+            );
+            $("#backtocontractdetails").on(
+                "click select",
+                (event) => {
+                    preventEvent(event); // This function might be custom, probably to prevent the default behavior of the event
+                    let form = $("#quote_form");
+
+
+                    $("#quote_form").show();
+                    window.scrollTo(0, 0);
+                    $("#estimateDetails").show();
+                    // $("#estimateListParent").show();
+                    $("#choosePaymentOption").hide();
+                    // $("#quoteRequestDetails").slideDown("slow");
+
+
+                }
+            );
 
             function setEstimationCost(estimate) {
                 // Get the original cost value from the label
@@ -409,193 +646,246 @@
 
                 // Calculate the discounted cost (90% of the original cost)
                 var discountedCost = originalCost * 0.9;
+                var discount = originalCost - discountedCost;
 
                 // Set the value in the "cost_after_discount" label
                 var costAfterDiscountLabel = document.getElementById("cost_after_discount");
-                costAfterDiscountLabel.innerText = "Cost (after 10% discount) $" + discountedCost.toFixed(2);
+                //costAfterDiscountLabel.innerText = "Cost (after 10% discount) $" + discountedCost.toFixed(2);
+                costAfterDiscountLabel.innerText = "Save an additional : $" + discount.toFixed(0) + "\n by paying in full today.";
             }
 
-                $(document).ready(function () {
-                $("#form_odometer_image").val("");
-                $("#uploadButton").on("click", function () {
-                    
-                    var formData = new FormData();
-                    var fileInput = $("#form_odometer_image")[0].files[0];
+          $(document).ready(function () {
+            $("#form_odometer_image").val("");
+            $("#form_odometer_image").on("change", function () {
+                var formData = new FormData();
+                var fileInput = $("#form_odometer_image")[0].files[0];
 
-                    formData.append("file", fileInput);
-                    $.ajax({
-                        url: "/SaveFile",
-                        type: "POST",
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function (data) {
-                            var successDiv = document.getElementById("success");
-                            var errorDiv = document.getElementById("error");
-                            if (data.message == "Please upload a file first.") {
-                                errorDiv.innerText = "Please choose a file first!";
-                                errorDiv.style.display = "block";
+                formData.append("file", fileInput);
+                $.ajax({
+                    url: "/SaveFile",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var successDiv = document.getElementById("success");
+                        var errorDiv = document.getElementById("error");
+                        if (data.message == "Please upload a file first.") {
+                            errorDiv.innerText = "Please choose a file first!";
+                            errorDiv.style.display = "block";
 
-                                setTimeout(function () {
-                                    errorDiv.style.display = "none";
-                                }, 3000);
-                            }
-                            else if (data.message == "Upload successful!") {
-                                successDiv.innerText = "Odometer pic uploaded successfully!";
-                                successDiv.style.display = "block";
-
-                                setTimeout(function () {
-                                    successDiv.style.display = "none";
-                                }, 3000);
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("Error uploading file", error);
-                          
+                            setTimeout(function () {
+                                errorDiv.style.display = "none";
+                            }, 3000);
                         }
-                    });
+                        else if (data.message == "Upload successful!") {
+                            successDiv.innerText = "Odometer pic uploaded successfully!";
+                            successDiv.style.display = "block";
+                            // setTimeout(function () {
+                            //     successDiv.style.display = "none";
+                            // }, 3000);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error uploading file", error);
+                    }
                 });
             });
 
+        });
+
+
             $(document).ready(function () {
-                
+
                 const isCheckboxChecked = $("#form_digitally_signed").is(":checked");
 
-              
+
                 if (isCheckboxChecked) {
                     $("#form_digitally_signed").prop("checked", false);
                 }
 
-                let isButtonClicked = false;  // Initialize a variable to track the state
-
-                uploadButton.addEventListener("click", function () {
-                    isButtonClicked = true;  // Set the variable to true when the button is clicked
-                    console.log("Button clicked! isButtonClicked is now:", isButtonClicked);
-                });
+               
 
                 $("#choosePaymentPlan,#btchoosePaymentPlan").on("click", function (event) {
-                    const isCheckboxChecked = $("#form_digitally_signed").is(":checked");
-                    const fileInput = document.getElementById("form_odometer_image");
-                    if (isCheckboxChecked && fileInput.files.length !== 0 && isButtonClicked) {
-                        event.preventDefault();
-                        window.location = "/payment-plans";
-                    } else if (!isCheckboxChecked) {
-                        $("#form_digitally_signed").siblings("label").addClass("fw-bold text-danger");
-                        $("#form_digitally_signed").focus();
-                    }
-                    else if (fileInput.files.length === 0) {
-                        $("#form_odometer_image").siblings("label").addClass("fw-bold text-danger");
-                        $("#form_odometer_image").focus();
-
-                        fileInput.addEventListener("change", function () {
-                            if (this.files.length > 0) {
-                                $("#form_odometer_image").siblings("label").removeClass("fw-bold text-danger");
+                  
+                        if (!$("#switchToPhone").hasClass("switch-to-phone-button-clicked")) {
+                            const isCheckboxChecked = $("#form_digitally_signed").is(":checked");
+                            const fileInput = document.getElementById("form_odometer_image");
+                            if (isCheckboxChecked && fileInput.files.length !== 0 ) {
+                                event.preventDefault();
+                                window.location = "/payment-plans";
+                            } else if (!isCheckboxChecked) {
+                                $("#form_digitally_signed").siblings("label").addClass("fw-bold text-danger");
+                                $("#form_digitally_signed").focus();
                             }
-                        });
-                    }
-                    else if (!isButtonClicked) {
-                        $("#form_odometer_image").siblings("label").addClass("fw-bold text-danger");
-                        $("#form_odometer_image").focus();
+                            else if (fileInput.files.length === 0) {
+                                $("#form_odometer_image").siblings("label").addClass("fw-bold text-danger");
+                                $("#form_odometer_image").focus();
 
-                        fileInput.addEventListener("change", function () {
-                            if (this.files.length > 0) {
-                                $("#form_odometer_image").siblings("label").removeClass("fw-bold text-danger");
+                                fileInput.addEventListener("change", function () {
+                                    if (this.files.length > 0) {
+                                        $("#form_odometer_image").siblings("label").removeClass("fw-bold text-danger");
+                                    }
+                                });
                             }
-                        });
-                    }
+                            // else if (!isButtonClicked) {
+                            //     $("#form_odometer_image").siblings("label").addClass("fw-bold text-danger");
+                            //     $("#form_odometer_image").focus();
+
+                            //     fileInput.addEventListener("change", function () {
+                            //         if (this.files.length > 0) {
+                            //             $("#form_odometer_image").siblings("label").removeClass("fw-bold text-danger");
+                            //         }
+                            //     });
+                            // }
+                        } else {
+                            var errorDiv = document.getElementById("error");
+                            $.ajax({
+                                url: "/payment-plans",
+                                type: "GET",
+                                success: function (response) {
+                                    // Handle success response here if needed
+                                    window.location = "/payment-plans"; // Redirect only after success if needed
+                                },
+                                error: function (xhr, status, error) {
+                                    // Handle error here if needed
+                                    errorDiv.innerText = "Please upload a file first!";
+                                    errorDiv.style.display = "block";
+
+                                    setTimeout(function () {
+                                        errorDiv.style.display = "none";
+                                    }, 3000);
+                                }
+                            });
+                        } 
+                        
+                    
+
                 });
 
                 $("#payByCreditCard,#btpayByCreditCard").on("click", function (event) {
-                    const isCheckboxChecked = $("#form_digitally_signed").is(":checked");
-                    const fileInput = document.getElementById("form_odometer_image");
-                    if (isCheckboxChecked && fileInput.files.length !== 0 && isButtonClicked) {
-                        event.preventDefault();
-                        window.location = "/payment-details";
-                    } else if (!isCheckboxChecked) {
-                        $("#form_digitally_signed").siblings("label").addClass("fw-bold text-danger");
-                        $("#form_digitally_signed").focus();
-                    }
-                    else if (fileInput.files.length === 0) {
-                        $("#form_odometer_image").siblings("label").addClass("fw-bold text-danger");
-                        $("#form_odometer_image").focus();
-
-                        fileInput.addEventListener("change", function () {
-                         if (this.files.length > 0) {
-                         $("#form_odometer_image").siblings("label").removeClass("fw-bold text-danger");
+                   
+                        if (!$("#switchToPhone").hasClass("switch-to-phone-button-clicked")) {
+                            const isCheckboxChecked = $("#form_digitally_signed").is(":checked");
+                            const fileInput = document.getElementById("form_odometer_image");
+                            if (isCheckboxChecked && fileInput.files.length !== 0 ) {
+                                event.preventDefault();
+                                window.location = "/payment-details";
+                            } else if (!isCheckboxChecked) {
+                                $("#form_digitally_signed").siblings("label").addClass("fw-bold text-danger");
+                                $("#form_digitally_signed").focus();
                             }
-                        });
-                    }
-                    else if (!isButtonClicked) {
-                        $("#form_odometer_image").siblings("label").addClass("fw-bold text-danger");
-                        $("#form_odometer_image").focus();
+                            else if (fileInput.files.length === 0) {
+                                $("#form_odometer_image").siblings("label").addClass("fw-bold text-danger");
+                                $("#form_odometer_image").focus();
 
-                        fileInput.addEventListener("change", function () {
-                            if (this.files.length > 0) {
-                                $("#form_odometer_image").siblings("label").removeClass("fw-bold text-danger");
+                                fileInput.addEventListener("change", function () {
+                                    if (this.files.length > 0) {
+                                        $("#form_odometer_image").siblings("label").removeClass("fw-bold text-danger");
+                                    }
+                                });
                             }
-                        });
-                    }
+
+                        } else {
+                            var errorDiv = document.getElementById("error");
+                            $.ajax({
+                                url: "/payment-details",
+                                type: "GET",
+                                success: function (response) {
+                                    // Handle success response here if needed
+                                    window.location = "/payment-details"; // Redirect only after success if needed
+                                },
+                                error: function (xhr, status, error) {
+                                    // Handle error here if needed
+                                    errorDiv.innerText = "Please upload a file first!";
+                                    errorDiv.style.display = "block";
+
+                                    setTimeout(function () {
+                                        errorDiv.style.display = "none";
+                                    }, 3000);
+                                }
+                            });
+                        }
+                        
+                    
+
                 });
             });
 
             $("#chooseEstimate1").on(
-			"click select",
-			(event) => {
-				preventEvent(event);
-				formSubmit({
+                "click select",
+                (event) => {
+                    preventEvent(event);
+                    formSubmit({
                         form: $("#estimate_form"),
                         url: "/ChoosePaymentOption",
-					failedFunction: function (xhr, status, error) {
-						// todo: maybe have these all have their own error panels near the buttons
-						$("#error").show().text(error);
-					},
-					successFunction: function (data) {
-						if (data === false) {
-							$("#error").show().text("An unknown error occurred while processing your request.");
-						}
-						else {
-                            $("#quote_form").toggle();
-                            let card = $("#choosePaymentOption");
+                        failedFunction: function (xhr, status, error) {
+                            // todo: maybe have these all have their own error panels near the buttons
+                            $("#error").show().text(error);
+                        },
+                        successFunction: function (data) {
+                            if (data === false) {
+                                $("#error").show().text("An unknown error occurred while processing your request.");
+                            }
+                            else {
+                                $("#quote_form").toggle();
+                                let card = $("#choosePaymentOption");
 
-							card.find(".termMonths").text(data.term.toLocaleString());
-							card.find(".termMiles").text(data.mileage.toLocaleString());
-							card.find(".planName").text(data.planDescription);
-							card.find(".deductible").text(data.deductAmt.toLocaleString());
-							card.find(".cost").text(data.retailRate.toLocaleString());
-							card.find(".card.quote").attr("rateId", data.rateId);
+                                card.find(".termMonths").text(data.term.toLocaleString());
+                                card.find(".termMiles").text(data.mileage.toLocaleString());
+                                card.find(".planName").text(data.planDescription);
+                                card.find(".deductible").text(data.deductAmt.toLocaleString());
+                                card.find(".cost").text(data.retailRate.toLocaleString());
+                                card.find(".card.quote").attr("rateId", data.rateId);
 
-							window.scrollTo(0, 0);
-                            
-                            $("#estimateListParent").hide()
-                            $("#choosePaymentOption").show();
-							//card.slideDown("slow");
-							$("#quoteRequestDetails").slideDown("slow");
-						}
-					},
+                                window.scrollTo(0, 0);
 
-				});
-			});
+                                $("#estimateListParent").hide()
+                                $("#choosePaymentOption").show();
+                                //card.slideDown("slow");
+                                $("#quoteRequestDetails").slideDown("slow");
+                            }
+                        },
 
-			$("#submit_quote1").on(
-				"click select",
-				(event) => {
-					preventEvent(event);
-					let form = $("#quote_form");
-					if (form.valid()) {
-						formSubmit({
-							form: form,
-							url: "/CustomerDetails",
-							successFunction: function (data) {
-								if (data === null) {
-									$("#error").show().text("An unknown error occurred while processing your request.");
-								}
-								else {
-									window.location = "/payment-details";
-								}
-							}
-						});
-					}
-				});
+                    });
+                });
+
+            $("#submit_quote1").on(
+                "click select",
+                (event) => {
+                    preventEvent(event);
+                    let form = $("#quote_form");
+                    if (form.valid()) {
+                        formSubmit({
+                            form: form,
+                            url: "/CustomerDetails",
+                            successFunction: function (data) {
+                                if (data === null) {
+                                    $("#error").show().text("An unknown error occurred while processing your request.");
+                                }
+                                else {
+                                    window.location = "/payment-details";
+                                }
+                            }
+                        });
+                    }
+                });
+            $(document).ready(function () {
+                // Find the radio button with the value 200
+                var radio200 = $("#deductible200");
+
+                // Check the radio button
+                radio200.prop("checked", true);
+                // function checkOdometerValue() {
+                //     var odometerValue = @session.EstimateRequest.MileageInt ;
+                //     if (odometerValue > 35000) {
+                //         document.getElementById("odometer").style.display = "block";
+                //     } else {
+                //         document.getElementById("odometer").style.display = "none";
+                //     }
+                // }
+                //checkOdometerValue();
+            });
 
             $("#submit_quote").on(
                 "click select",
@@ -612,7 +902,7 @@
                                 }
                                 else {
                                     $("#quote_form").toggle();
-                                    
+
                                     window.scrollTo(0, 0);
 
                                     $("#estimateDetails").hide()
@@ -625,6 +915,95 @@
                         });
                     }
                 });
-		});
-	</script>
+            });
+        function switchToPhone() {
+            showPopup();
+            // Construct the URL with query parameters
+            var value1 = "@session.EstimateRequest.VIN"; // Replace with your value
+            var value2 = @session.EstimateRequest.MileageInt; // Replace with your value
+            var value3 = '/SwitchToPhone/PhonePage?value1=' + encodeURIComponent(value1) + '&value2=' + encodeURIComponent(value2);
+            //var url = '/SwitchToPhone/Index23';
+            // Redirect to the controller action
+            // window.open(value3, '_blank');
+
+            // $.ajax({
+            //     url: '/Sms/SendSms',
+            //     type: 'POST',
+            //     data: { url: value3 },
+            //     success: function (response) {
+            //         console.log('Message sent successfully. SID:', response);
+            //         // Optionally, handle the response here
+            //     },
+            //     error: function (xhr, status, error) {
+            //         console.error('Error sending message:', error);
+            //         // Optionally, handle the error here
+            //     }
+            // });
+
+            // $.ajax({
+            //     url: '/Flowroute/Sendmessage',
+            //     type: 'POST',
+            //     data: { url: value3 },
+            //     success: function (response) {
+            //         console.log('Message sent successfully. SID:', response);
+            //         // Optionally, handle the response here
+            //     },
+            //     error: function (xhr, status, error) {
+            //         console.error('Error sending message:', error);
+            //         // Optionally, handle the error here
+            //     }
+            // });
+
+            $.ajax({
+                url: '/SwitchToPhone',
+                type: 'POST',
+                success: function (response) {
+                    console.log('Message sent successfully. SID:', response);
+                    // Optionally, handle the response here
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error sending message:', error);
+                    // Optionally, handle the error here
+                }
+            });
+
+
+            $("#switchToPhone").addClass("switch-to-phone-button-clicked");
+        }
+        function showPopup() {
+            var popup = document.getElementById('popup');
+            var overlay = document.getElementById('overlay');
+            popup.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+
+        function hidePopup() {
+            var popup = document.getElementById('popup');
+            var overlay = document.getElementById('overlay');
+            popup.style.display = 'none';
+            overlay.style.display = 'none';
+        }
+
+           const script = document.createElement("script");
+        script.src = "https://cdnjs.cloudflare.com/ajax/libs/signature_pad/3.0.0/signature_pad.umd.min.js";
+        script.onload = function () {
+            const canvas = document.getElementById('signature-pad');
+            const signaturePad = new SignaturePad(canvas);
+
+            document.getElementById('clearSignature').addEventListener('click', function () {
+                signaturePad.clear();
+            });
+
+            document.getElementById('uploadButton').addEventListener('click', function () {
+                if (!signaturePad.isEmpty()) {
+                    document.getElementById('signatureData').value = signaturePad.toDataURL();
+                }
+            });
+        };
+        document.head.appendChild(script);
+
+
+
+    </script>
+
 }

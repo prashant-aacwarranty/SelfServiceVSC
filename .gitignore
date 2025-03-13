@@ -266,3 +266,4 @@ cloc.cmd
 *.editorconfig.bak
 
 .env
+/package-lock.json

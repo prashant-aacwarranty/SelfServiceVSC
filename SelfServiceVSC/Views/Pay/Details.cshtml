@@ -1,157 +1,169 @@
 @using AAC.SelfServiceVSC
 @using AAC.SelfServiceVSC.Models
 @{
-	ViewData["Title"] = "Payment Details";
+    ViewData["Title"] = "Payment Details";
 }
-<div id="alert_success" style="display: none" class="alert alert-success" role="alert"></div>
+
 <form id="payment_form" name="payment_form" method="post" action="">
-	<div class="row">
-		<div class="col-12" id="payment_plan_details">
+    <div class="row">
+        <div class="col-12" id="payment_plan_details">
             <div class="container row mt-3">
                 <div class="card-header">
                     <h6 class="text-center">Pay By Credit Card</h6>
                 </div>
             </div>
-			<div class="container row mt-3">
-				<div class="col-12">
+            <div class="container row mt-3">
+                <div class="col-12">
                     <label id="cost_after_discount" style="font-size:x-large;font-weight:bold">Cost(after 10% discount) $</label>
-				</div>
-				<div class="col-md-6">
-					<div class="card transparent">
-						<div class="card-header">
-							<h4 class="text-center">Payment Details</h4>
-						</div>
-						<div class="card-body">
-							<div class="accordion">
-								<div class="accordion-item">
-									<h4 class="accordion-header text-center">
-										<button class="accordion-button" type="button" data-bs-toggle="collapse"
-											data-bs-target="#payment_card" aria-expanded="true" aria-controls="payment_card">
-											Pay by Credit Card
-										</button>
-									</h4>
-									<div id="payment_card" class="accordion-collapse collapse show mt-0">
-										<div class="accordion-body">
-											<div class="row mt-1">
-												<div class="col-md-6">
-													<label for="form_downpayment_payment_card_name">Name on Card</label>
-													<input type="text" name="DownpaymentPaymentCardName" id="form_downpayment_payment_card_name"
+                </div>
+                <div class="col-md-6">
+                    <div class="card transparent">
+                        <div class="card-header">
+                            <h4 class="text-center">Payment Details</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="accordion">
+                                <div class="accordion-item">
+                                    <h4 class="accordion-header text-center">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#payment_card" aria-expanded="true" aria-controls="payment_card">
+                                            Pay by Credit Card
+                                        </button>
+                                    </h4>
+                                    <div id="payment_card" class="accordion-collapse collapse show mt-0">
+                                        <div class="accordion-body">
+                                            <div class="row mt-1">
+                                                <div class="col-md-6">
+                                                    <label for="form_downpayment_payment_card_name">Name on Card</label>
+                                                    <input type="text" name="DownpaymentPaymentCardName" id="form_downpayment_payment_card_name"
                                                            class="form-control" value="" required placeholder="Name" />
-												</div>
-												<div class="form-group col-md-6">
-													<label for="form_downpayment_payment_card_number">Card Number</label>
-													<input type="text" name="DownpaymentPaymentCardNumber"
-														id="form_downpayment_payment_card_number" class="form-control" value=""
-														placeholder="####-####-####-####" data-inputmask="'mask': '9999-9999-9999-9999'"
-                                                        inputmode="numeric" required />
-												</div>
-											</div>
-											<div class="row mt-1">
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label for="form_downpayment_payment_card_number">Card Number</label>
+                                                    <input type="text" name="DownpaymentPaymentCardNumber"
+                                                           id="form_downpayment_payment_card_number" class="form-control" value=""
+                                                           placeholder="####-####-####-####" data-inputmask="'mask': '9999-9999-9999-9999'"
+                                                           inputmode="numeric" required />
+                                                </div>
+                                            </div>
+                                            <div class="row mt-1">
                                                 <div class="col-md-6">
                                                     <label for="form_payment_card_cvv">CVV</label>
                                                     <input type="password" name="payment_card_cvv" id="form_payment_card_cvv" class="form-control"
-                                                           value="" placeholder="CVV" maxlength="3" inputmode="numeric" required />
+                                                           value="" placeholder="CVV" maxlength="4" inputmode="numeric" required />
                                                 </div>
-												<div class="form-group col-md-6">
-													<label for="form_downpayment_payment_card_expiration">Expiration Date</label>
-													<input type="text" name="DownpaymentPaymentCardExpiration"
-														id="form_downpayment_payment_card_expiration" class="form-control" value=""
+                                                <div class="form-group col-md-6">
+                                                    <label for="form_downpayment_payment_card_expiration">Expiration Date</label>
+                                                    <input type="text" name="DownpaymentPaymentCardExpiration"
+                                                           id="form_downpayment_payment_card_expiration" class="form-control" value=""
                                                            data-inputmask="'regex': '\\d{1,2}/\\d{2}'" inputmode="numeric" required />
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="accordion-item mt-1">
-									<h4 class="accordion-header text-center">
-										<button class="accordion-button" type="button" data-bs-toggle="collapse"
-											data-bs-target="#bank_account" aria-expanded="true" aria-controls="bank_account">
-											Pay by Bank Account (ACH)
-										</button>
-									</h4>
-									<div id="bank_account" class="accordion-collapse collapse mt-0">
-										<div class="accordion-body">
-											<div class="row mt-1">
-												<div class="col-md-6">
-													<label for="form_downpayment_bank_transfer_name">Bank Name</label>
-													<input type="text" name="DownpaymentBankTransferName" id="form_downpayment_bank_transfer_name"
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                               @*  <div class="accordion-item mt-1">
+                                    <h4 class="accordion-header text-center">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#bank_account" aria-expanded="true" aria-controls="bank_account">
+                                            Pay by Bank Account (ACH)
+                                        </button>
+                                    </h4>
+                                    <div id="bank_account" class="accordion-collapse collapse mt-0">
+                                        <div class="accordion-body">
+                                            <div class="row mt-1">
+                                                <div class="col-md-6">
+                                                    <label for="form_downpayment_bank_transfer_name">Bank Name</label>
+                                                    <input type="text" name="DownpaymentBankTransferName" id="form_downpayment_bank_transfer_name"
                                                            class="form-control" value="" placeholder="Name" />
-												</div>
-												<div class="col-md-6">
-													<label for="form_downpayment_bank_transfer_account_type">Account Type</label>
-													<select name="DownpaymentBankTransferAccountType"
-														id="form_downpayment_bank_transfer_account_type" class="form-control">
-														<option selected value="CHECKING">Checking</option>
-														<option selected value="SAVINGS">Savings</option>
-													</select>
-												</div>
-											</div>
-											<div class="row mt-1">
-												<div class="col-md-6">
-													<label for="form_downpayment_bank_transfer_routing_number">Routing Number</label>
-													<input type="text" name="DownpaymentBankTransferRoutingNumber"
-														id="form_downpayment_bank_transfer_routing_number" class="form-control" value=""
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="form_downpayment_bank_transfer_account_type">Account Type</label>
+                                                    <select name="DownpaymentBankTransferAccountType"
+                                                            id="form_downpayment_bank_transfer_account_type" class="form-control">
+                                                        <option selected value="CHECKING">Checking</option>
+                                                        <option selected value="SAVINGS">Savings</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-1">
+                                                <div class="col-md-6">
+                                                    <label for="form_downpayment_bank_transfer_routing_number">Routing Number</label>
+                                                    <input type="text" name="DownpaymentBankTransferRoutingNumber"
+                                                           id="form_downpayment_bank_transfer_routing_number" class="form-control" value=""
                                                            placeholder="" inputmode="numeric" />
-												</div>
-												<div class="col-md-6">
-													<label for="form_downpayment_bank_transfer_account_number">Account Number</label>
-													<input type="text" name="DownpaymentBankTransferAccountNumber"
-														id="form_downpayment_bank_transfer_account_number" class="form-control" value=""
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="form_downpayment_bank_transfer_account_number">Account Number</label>
+                                                    <input type="text" name="DownpaymentBankTransferAccountNumber"
+                                                           id="form_downpayment_bank_transfer_account_number" class="form-control" value=""
                                                            placeholder="" inputmode="numeric" />
-												</div>
-											</div>
-											<div class="row mt-1">
-												<div class="col-md-6">
-													<label for="form_downpayment_bank_transfer_routing_number_confirmation">Routing Number
-														(Confirm)</label>
-													<input type="text" name="DownpaymentBankTransferRoutingNumberConfirmation"
-														id="form_downpayment_bank_transfer_routing_number_confirmation" class="form-control"
+                                                </div>
+                                            </div>
+                                            <div class="row mt-1">
+                                                <div class="col-md-6">
+                                                    <label for="form_downpayment_bank_transfer_routing_number_confirmation">
+                                                        Routing Number
+                                                        (Confirm)
+                                                    </label>
+                                                    <input type="text" name="DownpaymentBankTransferRoutingNumberConfirmation"
+                                                           id="form_downpayment_bank_transfer_routing_number_confirmation" class="form-control"
                                                            value="" inputmode="numeric" />
-												</div>
-												<div class="col-md-6">
-													<label for="form_downpayment_bank_transfer_account_number_confirmation">Account Number
-														(Confirm)</label>
-													<input type="text" name="DownpaymentBankTransferAccountNumberConfirmation"
-														id="form_downpayment_bank_transfer_account_number_confirmation" class="form-control"
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="form_downpayment_bank_transfer_account_number_confirmation">
+                                                        Account Number
+                                                        (Confirm)
+                                                    </label>
+                                                    <input type="text" name="DownpaymentBankTransferAccountNumberConfirmation"
+                                                           id="form_downpayment_bank_transfer_account_number_confirmation" class="form-control"
                                                            value="" inputmode="numeric" />
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	
-	<div class="container row mt-3">
-		<p class="text-center">You can always call us at <a href="tel:@SelfServiceVSC.AppSettings.PhoneNumberMain"><i
-					class="fas fa-phone-alt small m-1"></i>@SelfServiceVSC.AppSettings.PhoneNumberMain.FormatPhone()</a> and we
-			can complete this process on the phone.</p>
-	</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> *@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container row mt-3">
+        <p class="text-center">
+            You can always call us at <a href="tel:@SelfServiceVSC.AppSettings.PhoneNumberMain">
+                <i class="fas fa-phone-alt small m-1"></i>@SelfServiceVSC.AppSettings.PhoneNumberMain.FormatPhone()
+            </a> and we
+            can complete this process on the phone.
+        </p>
+    </div>
+    <div id="spinner" style="display: none" class="text-center mt-3">
+        <!-- Add your spinner HTML/CSS/JS code here -->
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    <div id="success" style="display: none" class="alert alert-success text-center" role="alert"></div>
+    <div id="error" style="display: none" class="alert alert-danger text-center" role="alert"></div>
+    <div class="text-center mt-3">
+        <button type="submit" class="btn btn-success rounded-pill p-4 pt-2 pb-2" id="finalize_payment">
+            Purchase
+        </button>
+    </div>
 </form>
-
-<hr />
-
-<div class="text-center mt-3">
-	<button type="submit" class="btn btn-success rounded-pill p-4 pt-2 pb-2" id="finalize_payment">
-		Purchase
-	</button>
-</div>
 <div id='product-component-1702473815866'></div>
 @section Scripts
-	{
-	<style type="text/css">
-		body {
-			background-image: linear-gradient(white 20%, transparent 30%, transparent 70%, white 80%), url('/img/bg/bg04.jpg');
-		}
-	</style>
+{
+    <style type="text/css">
+        body {
+            background-image: linear-gradient(white 20%, transparent 30%, transparent 70%, white 80%), url('/img/bg/bg04.jpg');
+        }
+    </style>
     <script src="https://api.demo.convergepay.com/hosted-payments/Checkout.js"></script>
-	<script type="text/javascript">
-		let selectedEstimate;
+    <script type="text/javascript">
+        let selectedEstimate;
 
         $(function () {
             $(":input").inputmask();
@@ -394,9 +406,60 @@
                     window.open("/contract-preview", "_blank");
                 });
 
-            function pay(data) {
-                
-                // var token = sessionStorage.getItem('token');
+            function payAch(data) {
+
+                var token = sessionStorage.getItem('token');
+                //var gettoken = "Y";
+                //var addtoken = "Y";
+                var firstname = data.quoteRequest.fname;
+                var lastname = data.quoteRequest.lname;
+                //var merchanttxnid = 12310;
+
+                var paymentData = {
+                    ssl_txn_auth_token: data.token,
+                    ssl_first_name: firstname,
+                    ssl_last_name: lastname,
+                    ssl_aba_number: "490000018",
+                    ssl_bank_account_number: "12345678901234",
+                    ssl_bank_account_type: "0",
+                    ssl_agree: "1",
+                };
+
+                var callback = {
+                    onError: function (error) {
+                        //showResult("error", error);
+                    },
+                    onDeclined: function (response) {
+                        console.log("Result Message=" + response['ssl_result_message']);
+                        //var response1 = JSON.stringify(response);
+                        //showResult("declined", JSON.stringify(response));
+                    },
+                    onApproval: function (response) {
+                        console.log("Approval Code=" + response['ssl_approval_code']);
+                        if (response.ssl_result_message == "APPROVAL") {
+                            var xyz = JSON.stringify(response);
+                            var alertDiv = document.getElementById("success");
+                            alertDiv.innerText = "Payment Successful your service contract coverage is being generated  \nPlease do not click anything or move away from this page until this process is complete";
+                            alertDiv.style.display = "block";
+                            finalizeContract();
+
+                            // setTimeout(function () {
+                            //     window.location = "/payment-process-credit";
+                            // }, 5000);
+
+                        }
+                        console.log(response)
+
+
+
+                        //showResult("approval", JSON.stringify(response));
+                    }
+                };
+                ConvergeEmbeddedPayment.pay(paymentData, callback);
+            }
+            function payCredit(data) {
+
+                var token = sessionStorage.getItem('token');
                 var card = document.getElementById("form_downpayment_payment_card_number").value;
                 var exp = document.getElementById('form_downpayment_payment_card_expiration').value;
                 var cvv = document.getElementById('form_payment_card_cvv').value;
@@ -429,18 +492,18 @@
                     onApproval: function (response) {
                         console.log("Approval Code=" + response['ssl_approval_code']);
                         if (response.ssl_token_response == "SUCCESS") {
-                            var alertDiv = document.getElementById("alert_success");
-                            alertDiv.innerText = "Payment Successfully Done!";
+                            var alertDiv = document.getElementById("success");
+                            alertDiv.innerText = "Payment Successful your service contract coverage is being generated  \nPlease do not click anything or move away from this page until this process is complete";
                             alertDiv.style.display = "block";
                             finalizeContract();
 
                             // setTimeout(function () {
                             //     window.location = "/payment-process-credit";
                             // }, 5000);
-                           
+
                         }
                         console.log(response)
-                        
+
 
 
                         //showResult("approval", JSON.stringify(response));
@@ -448,39 +511,110 @@
                 };
                 ConvergeEmbeddedPayment.pay(paymentData, callback);
             }
+            function isACHFieldsPopulated() {
+                var bankName = $("#form_downpayment_bank_transfer_name").val().trim();
+                var accountType = $("#form_downpayment_bank_transfer_account_type").val().trim();
+                var accountNumber = $("#form_downpayment_bank_transfer_account_number").val().trim();
+                var confirmAccountNumber = $("#form_downpayment_bank_transfer_account_number_confirmation").val().trim();
+                var routingNumber = $("#form_downpayment_bank_transfer_routing_number").val().trim();
+                var confirmRoutingNumber = $("#form_downpayment_bank_transfer_routing_number_confirmation").val().trim();
+                return bankName !== "" && accountType !== "" && accountNumber !== "" && confirmAccountNumber !== "" && routingNumber !== "" && confirmRoutingNumber !== "";
+            }
 
             $("#finalize_payment").on("click select", (event) => {
                 preventEvent(event);
+                var successDiv = document.getElementById("success");
+                var errorDiv = document.getElementById("error");
+                var spinnerDiv = document.getElementById("spinner");
+                errorDiv.style.display = "none";
+                successDiv.style.display = "none";
+                spinnerDiv.style.display = "none";
+                var purchaseButton = $("#finalize_payment");
+                
                 // Remove non-numeric characters from the card number
                 var cardNumber = $("#form_downpayment_payment_card_number").val().replace(/[^0-9]/g, '');
                 let form = $("#payment_form");
 
                 if (form.valid()) {
-                    if (confirm("This action will electronically sign the contract and schedule the first payment for 30 days from today. Proceed?")) {
-                        var requestData = {
-                            FirstName: document.getElementById("form_downpayment_payment_card_name").value,
-                            LastName: document.getElementById("form_downpayment_payment_card_name").value
-                        };
-                        
-                        $.ajax({
-                            url: "/GetToken",
-                            type: "POST",
-                            contentType: "application/json",
-                            data: JSON.stringify(requestData),
-                            success: function (data) {
-                                if (data === false) {
-                                    // Something has gone wrong, handle this visually
-                                } else {
-                                    // Save documents locally, display loan/contract IDs, print
-                                    pay(data);
-                                }
-                            },
-                            error: function (xhr, textStatus, errorThrown) {
+                    var requestData = {
+                        FirstName: document.getElementById("form_downpayment_payment_card_name").value,
+                        LastName: document.getElementById("form_downpayment_payment_card_name").value,
+                        CcAccountNum: document.getElementById("form_downpayment_payment_card_number").value,
+                        CcExp: document.getElementById("form_downpayment_payment_card_expiration").value,
+                        CcCardVerifyNum: document.getElementById("form_payment_card_cvv").value
+                    };
+                    successDiv.innerText = "Your method of payment is being applied and your service contract coverage is being generated  \nPlease do not click anything or move away from this page until this process is complete";
+                    successDiv.style.display = "block";
+                    purchaseButton.prop('disabled', true).text("Generating...");
+                    spinnerDiv.style.display = "block";
+                    // if (isACHFieldsPopulated()) {
+                    //     $.ajax({
+                    //         url: "/GetAchToken",
+                    //         type: "POST",
+                    //         contentType: "application/json",
+                    //         data: JSON.stringify(requestData),
+                    //         success: function (data) {
+                    //             if (data === false) {
+                    //                 // Something has gone wrong, handle this visually
+                    //             } else {
+                    //                 // Save documents locally, display loan/contract IDs, print
+                    //                 payAch(data);
+                    //             }
+                    //         },
+                    //         error: function (xhr, textStatus, errorThrown) {
 
-                                console.error("Error:", errorThrown);
+                    //             console.error("Error:", errorThrown);
+                    //         }
+                    //     });
+                    // }else
+                    // $.ajax({
+                    //     url: "/GetToken",
+                    //     type: "POST",
+                    //     contentType: "application/json",
+                    //     data: JSON.stringify(requestData),
+                    //     success: function (data) {
+                    //         if (data === false) {
+                    //             // Something has gone wrong, handle this visually
+                    //         } else {
+                    //             // Save documents locally, display loan/contract IDs, print
+                    //             payCredit(data);
+                    //         }
+                    //     },
+                    //     error: function (xhr, textStatus, errorThrown) {
+
+                    //         console.error("Error:", errorThrown);
+                    //     }
+                    // });
+
+                    $.ajax({
+                        url: "/ChaseOrbitalPayments",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(requestData),
+                        success: function (data) {
+                            if (data === false) {
+                                // Something has gone wrong, handle this visually
+                            } else {
+                                // Save documents locally, display loan/contract IDs, print
+                                    successDiv.innerText = "Payment Successful your service contract coverage is being generated  \nPlease do not click anything or move away from this page until this process is complete";
+                                    finalizeContract();
                             }
-                        });
-                    }
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            purchaseButton.prop('disabled', false).text("Purchase");
+                            spinnerDiv.style.display = "none";
+                            successDiv.style.display = "none";
+                            errorDiv.innerText = "Payment Failed";
+                            errorDiv.style.display = "block";
+
+                            setTimeout(function () {
+                                errorDiv.style.display = "none";
+                            }, 3000);
+
+                            console.error("Error:", errorThrown);
+                        }
+                    });
+
                 }
             });
 
@@ -488,7 +622,11 @@
                 // Remove non-numeric characters from the card number
                 var cardNumber = $("#form_downpayment_payment_card_number").val().replace(/[^0-9]/g, '');
                 let form = $("#payment_form");
-                debugger
+                var successDiv = document.getElementById("success");
+                var errorDiv = document.getElementById("error");
+                var purchaseButton = $("#finalize_payment");
+                purchaseButton.prop('disabled', true).text("Generating...");
+                var spinnerDiv = document.getElementById("spinner");
                 formSubmit({
                     form: form,
                     formType: "",
@@ -496,22 +634,32 @@
                     successFunction: function (data) {
                         var responseData = JSON.parse(data);
                         if (responseData === false) {
+                            successDiv.style.display = "none";
                             console.error("API call failed.");
+                            errorDiv.innerText = "An error has occurred while creating contract";
+                            errorDiv.style.display = "block";
+                            purchaseButton.prop('disabled', false).text("Purchase");
                         } else {
                             console.log("API call successful:", responseData);
-                            window.location = "/payment-process-credit";    
+                            setTimeout(function () {
+                                successDiv.style.display = "none";
+                                window.location = "/payment-process-credit";
+                            }, 3000);
+                            //window.location = "/payment-process-credit";
                         }
+                        spinnerDiv.style.display = "none";
                     },
                     error: function (xhr, status, error) {
                         debugger
                         // Handle AJAX request errors here
                         console.error("AJAX request failed:", status, error);
                     }
-                    
+
                 });
             }
 
-		});
-        
-	</script>
+        });
+    
+
+    </script>
 }

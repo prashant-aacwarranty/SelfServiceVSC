@@ -3,6 +3,7 @@ using AAC.SelfServiceVSC.Models.Form;
 using System.Text.Json;
 using System.Text;
 using System.Text.Json.Serialization;
+using AAC.SelfServiceVSC.Models.ChaseOrbitalAPI;
 
 namespace AAC.SelfServiceVSC.Models
 {
@@ -19,6 +20,8 @@ namespace AAC.SelfServiceVSC.Models
 		public String EstimateId { get; set; } = null;
 
 		public PaymentRequest PaymentRequest { get; set; }
+
+		public ChasePaymentRequest ChasePaymentRequest { get; set; }
 
 		public List<SessionEstimate> SessionEstimates { get; set; }
 
@@ -70,6 +73,9 @@ namespace AAC.SelfServiceVSC.Models
 		public FinalizeContractRequest FinalizeContract { get; set; } = null;
 
 		public GenerateContractResponse GeneratedContract { get; set; } = null;
+		public long CustomerId { get; set; }
+		public long CustomersSwitched { get; set; }
+		public int RateId { get; set; } 
 		#endregion
 
 		#region Methods
@@ -85,6 +91,7 @@ namespace AAC.SelfServiceVSC.Models
 			LoanId = null;
 			FinalizeContract = null;
 			GeneratedContract = null;
+			ChasePaymentRequest = null;
 		}
 
 		public void SelectEstimate(
